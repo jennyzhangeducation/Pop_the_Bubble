@@ -1,0 +1,2826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🫧 信息茧房体验馆</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== 屏幕容器 ===== */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 开始页 ===== */
+        #screen-start {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 50%, #0a1a3e 100%);
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-subtitle {
+            font-size: 1.1em;
+            color: #8888aa;
+            margin-bottom: 40px;
+        }
+
+        .bubble-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto 40px;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .bubble:nth-child(1) {
+            width: 120px; height: 120px;
+            background: radial-gradient(circle at 30% 30%, #ff6b6b88, #ff6b6b22);
+            top: 20px; left: 40px;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 80px; height: 80px;
+            background: radial-gradient(circle at 30% 30%, #4d96ff88, #4d96ff22);
+            top: 80px; left: 0px;
+            animation-delay: 1s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 60px; height: 60px;
+            background: radial-gradient(circle at 30% 30%, #ffd93d88, #ffd93d22);
+            top: 10px; left: 120px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .start-btn {
+            padding: 16px 48px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px #6366f144;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px #6366f166;
+        }
+
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== 话题选择页 ===== */
+        #screen-topic {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 100%);
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .section-desc {
+            color: #8888aa;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 0.95em;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .topic-card {
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid #ffffff15;
+            background: #ffffff08;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .topic-card:hover {
+            border-color: #6366f1;
+            background: #6366f115;
+            transform: translateX(5px);
+        }
+
+        .topic-card:active {
+            transform: scale(0.98);
+        }
+
+        .topic-emoji {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .topic-name {
+            font-size: 1.15em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .topic-desc {
+            font-size: 0.85em;
+            color: #8888aa;
+        }
+
+        .topic-hot {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #ff6b6b33;
+            color: #ff6b6b;
+            border-radius: 10px;
+            font-size: 0.75em;
+            margin-left: 6px;
+        }
+
+        /* ===== 偏好探测页 ===== */
+        #screen-discover {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 100%);
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
+
+        .discover-progress {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .discover-progress-dot {
+            width: 28px;
+            height: 4px;
+            border-radius: 2px;
+            background: #ffffff20;
+            transition: background 0.3s;
+        }
+
+        .discover-progress-dot.done { background: #6366f1; }
+        .discover-progress-dot.current { background: #ffd93d; }
+
+        .discover-pair {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .discover-card {
+            padding: 22px;
+            border-radius: 18px;
+            border: 2px solid #ffffff15;
+            background: #ffffff08;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: left;
+        }
+
+        .discover-card:hover {
+            border-color: #6366f1;
+            background: #6366f115;
+            transform: scale(1.02);
+        }
+
+        .discover-card:active { transform: scale(0.98); }
+
+        .discover-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            margin-bottom: 10px;
+            background: #6366f122;
+            color: #a5b4fc;
+        }
+
+        .discover-preview {
+            font-size: 1.05em;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .discover-vs {
+            text-align: center;
+            color: #555;
+            font-size: 0.85em;
+        }
+
+        /* ===== 初始立场页 ===== */
+        #screen-stance, #screen-final {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 100%);
+        }
+
+        .stance-question {
+            font-size: 1.3em;
+            text-align: center;
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .stance-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .stance-btn {
+            padding: 16px 20px;
+            border: 2px solid #ffffff20;
+            border-radius: 14px;
+            background: #ffffff08;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .stance-btn:hover {
+            border-color: #6366f1;
+            background: #6366f120;
+        }
+
+        .stance-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== 刷帖页 ===== */
+        #screen-feed {
+            background: #0f0f1a;
+            padding: 0;
+            justify-content: flex-start;
+        }
+
+        .feed-header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            padding: 12px 20px;
+            background: #0f0f1aee;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ffffff10;
+        }
+
+        .feed-round {
+            font-size: 0.9em;
+            color: #8888aa;
+        }
+
+        .feed-progress {
+            display: flex;
+            gap: 4px;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffffff20;
+            transition: background 0.3s;
+        }
+
+        .progress-dot.done {
+            background: #6366f1;
+        }
+
+        .progress-dot.current {
+            background: #ffd93d;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+        }
+
+        .algo-alert {
+            width: 100%;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #ff6b6b22, #ff6b6b00);
+            border-left: 3px solid #ff6b6b;
+            font-size: 0.85em;
+            color: #ff6b6b;
+            display: none;
+        }
+
+        .algo-alert.show {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 0;
+            animation: cardIn 0.4s ease;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .post-source {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .source-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .source-name {
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .source-time {
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        .post-content {
+            font-size: 1em;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        .post-stats {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .btn-like {
+            background: linear-gradient(135deg, #ff6b6b33, #ff6b6b11);
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b44;
+        }
+
+        .btn-like:hover {
+            background: #ff6b6b44;
+            transform: scale(1.02);
+        }
+
+        .btn-like:active {
+            transform: scale(0.95);
+        }
+
+        .btn-skip {
+            background: #ffffff08;
+            color: #666;
+            border: 2px solid #ffffff15;
+        }
+
+        .btn-skip:hover {
+            background: #ffffff15;
+            transform: scale(1.02);
+        }
+
+        .btn-skip:active {
+            transform: scale(0.95);
+        }
+
+        .round-transition {
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .round-transition h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .round-transition p {
+            color: #8888aa;
+            margin-bottom: 20px;
+        }
+
+        .continue-btn {
+            padding: 12px 36px;
+            border: none;
+            border-radius: 50px;
+            background: #6366f1;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .continue-btn:hover {
+            background: #7c7ef7;
+        }
+
+        /* ===== 最终立场页 ===== */
+        #screen-final {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 100%);
+        }
+
+        /* ===== 结果揭示页 ===== */
+        #screen-result {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 100%);
+            padding: 20px;
+        }
+
+        .result-container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .reveal-box {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .reveal-box h3 {
+            font-size: 1.1em;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar-chart {
+            margin-bottom: 12px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .bar-label {
+            font-size: 0.85em;
+            width: 60px;
+            text-align: right;
+            color: #aaa;
+        }
+
+        .bar-track {
+            flex-grow: 1;
+            height: 24px;
+            background: #ffffff10;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .bar-fill.pro {
+            background: linear-gradient(90deg, #6bcb77, #4ade80);
+        }
+
+        .bar-fill.con {
+            background: linear-gradient(90deg, #ff6b6b, #f87171);
+        }
+
+        .stance-change {
+            text-align: center;
+            padding: 20px;
+            margin: 16px 0;
+            border-radius: 14px;
+            font-size: 1.1em;
+        }
+
+        .stance-change.changed {
+            background: #ff6b6b15;
+            border: 1px solid #ff6b6b33;
+            color: #ff8a8a;
+        }
+
+        .stance-change.same {
+            background: #6bcb7715;
+            border: 1px solid #6bcb7733;
+            color: #6bcb77;
+        }
+
+        .truth-section {
+            background: #0f0f2a;
+            border: 1px solid #6366f133;
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 12px;
+        }
+
+        .truth-section h4 {
+            color: #6366f1;
+            margin-bottom: 10px;
+        }
+
+        .truth-section p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #aaa;
+        }
+
+        /* ===== 分数页 ===== */
+        #screen-score {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 100%);
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            padding: 4px;
+            background: conic-gradient(from 0deg, #6366f1, #8b5cf6, #ec4899, #f43f5e, #6366f1);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .score-number {
+            font-size: 3.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #8888aa;
+        }
+
+        .score-rank {
+            font-size: 1.2em;
+            margin: 16px 0;
+            padding: 10px 24px;
+            background: #ffffff08;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .tips-box {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .tips-box h3 {
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+        }
+
+        .tip-num {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background: #6366f133;
+            color: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: 700;
+        }
+
+        .tip-text {
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #ccc;
+        }
+
+        .tip-text strong {
+            color: #fff;
+        }
+
+        .final-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .final-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-replay {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-share {
+            background: #ffffff10;
+            color: #fff;
+            border: 2px solid #ffffff20;
+        }
+
+        .btn-replay:hover, .btn-share:hover {
+            transform: scale(1.05);
+        }
+
+        /* ===== 通用 ===== */
+        .emoji-big {
+            font-size: 4em;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        /* ===== Loading ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0a0a1aee;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #ffffff20;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            color: #8888aa;
+            font-size: 0.95em;
+        }
+
+        /* ===== 全局统计弹窗 ===== */
+        .global-stats {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ffffff08;
+            font-size: 0.9em;
+        }
+
+        .stat-row:last-child {
+            border: none;
+        }
+
+        .stat-value {
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        /* ===== 暗色滚动条 ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ffffff20;
+            border-radius: 2px;
+        }
+
+        /* ===== 双栏布局：社交媒体 + 算法面板 ===== */
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .main-panel {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.algo-mode .main-panel {
+            align-items: center;
+            justify-content: center;
+            background: #050508;
+            padding: 16px;
+        }
+
+        body.algo-mode .screen.active {
+            width: 100%;
+            max-width: 390px;
+            min-height: auto;
+            padding: 0;
+            justify-content: flex-start;
+        }
+
+        .algo-panel {
+            width: 400px;
+            flex-shrink: 0;
+            background: #080810;
+            border-left: 1px solid #ffffff12;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            max-height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        body.algo-mode .algo-panel {
+            display: flex;
+        }
+
+        .algo-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #ffffff10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, #12121f, #080810);
+        }
+
+        .algo-header h2 {
+            font-size: 1.05em;
+            font-weight: 700;
+        }
+
+        .algo-status {
+            font-size: 0.75em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #22c55e22;
+            color: #22c55e;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .algo-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .algo-section {
+            background: #0f0f18;
+            border: 1px solid #ffffff0d;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .algo-section h3 {
+            font-size: 0.82em;
+            color: #8888aa;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .algo-score-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.78em;
+        }
+
+        .algo-score-label {
+            width: 68px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.72em;
+        }
+
+        .algo-score-track {
+            flex: 1;
+            height: 8px;
+            background: #ffffff0a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .algo-score-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-width: 2px;
+        }
+
+        .algo-score-num {
+            width: 28px;
+            text-align: right;
+            color: #666;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .algo-rule-card {
+            background: #ffffff06;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid #6366f1;
+        }
+
+        .algo-rule-card.active {
+            border-left-color: #ffd93d;
+            background: #ffd93d08;
+        }
+
+        .algo-rule-title {
+            font-size: 0.88em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .algo-rule-desc {
+            font-size: 0.78em;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .algo-mix-bar {
+            display: flex;
+            height: 28px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .algo-mix-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72em;
+            font-weight: 600;
+            transition: width 0.8s ease;
+            min-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .algo-mix-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.72em;
+            color: #888;
+        }
+
+        .algo-mix-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .algo-mix-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .algo-log-section {
+            flex: 1;
+            min-height: 180px;
+        }
+
+        .algo-log {
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .algo-log-item {
+            font-size: 0.78em;
+            line-height: 1.5;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            background: #ffffff05;
+            border-left: 2px solid #ffffff15;
+            animation: logIn 0.35s ease;
+        }
+
+        .algo-log-item.highlight {
+            border-left-color: #ffd93d;
+            background: #ffd93d0a;
+        }
+
+        .algo-log-item.like { border-left-color: #ff6b6b; }
+        .algo-log-item.comment { border-left-color: #60a5fa; }
+        .algo-log-item.share { border-left-color: #a78bfa; }
+        .algo-log-item.save { border-left-color: #fbbf24; }
+        .algo-log-item.skip { border-left-color: #666; }
+        .algo-log-item.discover { border-left-color: #6366f1; }
+        .algo-log-item.system { border-left-color: #22c55e; }
+
+        @keyframes logIn {
+            from { opacity: 0; transform: translateX(12px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .algo-next-preview {
+            font-size: 0.82em;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .algo-next-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 10px;
+            background: #6366f115;
+            border-radius: 10px;
+        }
+
+        .algo-next-top strong {
+            color: #ffd93d;
+        }
+
+        /* ===== 手机外壳 & 社交媒体 UI ===== */
+        .phone-device {
+            width: 100%;
+            max-width: 390px;
+            height: min(780px, calc(100vh - 32px));
+            background: #000;
+            border-radius: 36px;
+            border: 3px solid #2a2a3a;
+            box-shadow: 0 20px 60px #00000088, inset 0 0 0 1px #ffffff15;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 26px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 20;
+        }
+
+        .phone-status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 24px 6px;
+            font-size: 0.72em;
+            color: #fff;
+            z-index: 10;
+        }
+
+        .social-app {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .social-top-tabs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 8px 16px 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .social-tab {
+            font-size: 0.95em;
+            color: #888;
+            font-weight: 500;
+            cursor: default;
+        }
+
+        .social-tab.active {
+            color: #fff;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .social-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        .social-live {
+            position: absolute;
+            right: 16px;
+            font-size: 0.75em;
+            color: #ff6b6b;
+        }
+
+        .social-feed-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-post-full {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            animation: cardIn 0.35s ease;
+        }
+
+        .social-media-bg {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .social-media-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, #000000cc 100%);
+        }
+
+        .media-emoji {
+            font-size: 5em;
+            opacity: 0.35;
+            filter: blur(0.5px);
+        }
+
+        .social-side-actions {
+            position: absolute;
+            right: 10px;
+            top: 48px;
+            bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 10px;
+            align-items: center;
+            z-index: 20;
+            pointer-events: auto;
+        }
+
+        .social-action-btn.skip-btn .social-action-icon {
+            background: #ffffff28;
+            border: 1px solid #ffffff35;
+        }
+
+        .social-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .social-action-btn:active { transform: scale(0.88); }
+
+        .social-action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #ffffff18;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25em;
+        }
+
+        .social-action-btn.like-btn .social-action-icon {
+            background: #ff6b6b33;
+        }
+
+        .social-action-count {
+            font-size: 0.72em;
+            font-weight: 600;
+            text-shadow: 0 1px 3px #000;
+        }
+
+        .social-bottom-meta {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 58px;
+            padding: 12px 14px 14px;
+            z-index: 5;
+            max-height: 46%;
+        }
+
+        .social-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .social-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            border: 2px solid #fff;
+        }
+
+        .social-username {
+            font-weight: 700;
+            font-size: 0.95em;
+        }
+
+        .follow-btn {
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: none;
+            background: #ff2d55;
+            color: #fff;
+            font-size: 0.78em;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .social-caption {
+            font-size: 0.88em;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .social-tag {
+            display: inline-block;
+            font-size: 0.78em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #ffffff20;
+            margin-bottom: 6px;
+        }
+
+        .social-music {
+            font-size: 0.75em;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .social-music-icon {
+            animation: spin 3s linear infinite;
+            display: inline-block;
+        }
+
+        .social-skip-bar {
+            position: absolute;
+            bottom: 16px;
+            right: 12px;
+            z-index: 6;
+        }
+
+        .skip-fab {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #ffffff22;
+            backdrop-filter: blur(8px);
+            border: 1px solid #ffffff30;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .skip-fab:active { transform: scale(0.88); }
+
+        .phone-bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 8px 20px;
+            background: #000;
+            border-top: 1px solid #ffffff10;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.65em;
+            color: #666;
+        }
+
+        .nav-item.active { color: #fff; }
+        .nav-item span:first-child { font-size: 1.4em; }
+
+        .discover-in-phone {
+            flex: 1;
+            padding: 12px 16px 16px;
+            overflow-y: auto;
+        }
+
+        .discover-in-phone .section-title {
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+
+        .discover-in-phone .section-desc {
+            font-size: 0.8em;
+            margin-bottom: 16px;
+        }
+
+        .feed-progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #ffffff15;
+            z-index: 15;
+        }
+
+        .feed-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #ec4899);
+            transition: width 0.3s ease;
+        }
+
+        .round-transition-in-phone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        @media (max-width: 960px) {
+            body.algo-mode .app-layout {
+                flex-direction: column;
+            }
+            body.algo-mode .algo-panel {
+                width: 100%;
+                max-height: 45vh;
+                position: relative;
+                border-left: none;
+                border-top: 1px solid #ffffff12;
+            }
+            .phone-device {
+                height: min(560px, 55vh);
+            }
+        }
+
+        body.lang-en .bi-cn { display: none; }
+        body.lang-cn .bi-en { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- ===== 加载遮罩 ===== -->
+<div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText"><span class="bi-cn">算法正在分析你的偏好...</span><span class="bi-en">Analyzing your preferences...</span></div>
+</div>
+
+<div class="app-layout" id="appLayout">
+<main class="main-panel" id="mainPanel">
+
+<!-- ===== 1. 开始页 ===== -->
+<div class="screen active" id="screen-start">
+    <div class="bubble-container">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+    <div class="game-title"><span class="bi-cn">茧房迷宫</span><span class="bi-en">Bubble Maze</span></div>
+    <div class="game-subtitle"><span class="bi-cn">你看到的世界，是真实的吗？</span><span class="bi-en">Is the world you see the real one?</span></div>
+    <p style="color:#666; max-width:360px; text-align:center; line-height:1.6; margin-bottom:30px; font-size:0.9em;">
+        <span class="bi-cn">左边刷梗图、憋笑、校园日常……右边看算法怎么越推越窄。<br>专为七年级设计，每次点击都在教算法。</span>
+        <span class="bi-en">Memes, laughs, school life on the left—watch the algorithm narrow your feed on the right.<br>Built for 7th graders: every tap teaches the algorithm.</span>
+    </p>
+    <button class="start-btn" onclick="startDiscover()"><span class="bi-cn">开始体验 →</span><span class="bi-en">Start →</span></button>
+    <p style="color:#444; margin-top:20px; font-size:0.8em;"><span class="bi-cn">⏱ 约5分钟 · 无需注册</span><span class="bi-en">⏱ ~5 min · No sign-up</span></p>
+</div>
+
+<!-- ===== 2. 偏好探测（手机界面） ===== -->
+<div class="screen" id="screen-discover">
+    <div class="phone-device">
+        <div class="phone-notch"></div>
+        <div class="phone-status-bar"><span>9:41</span><span>📶 🔋</span></div>
+            <div class="social-app">
+            <div class="feed-progress-bar"><div class="feed-progress-fill" id="discoverProgressFill"></div></div>
+            <div class="social-top-tabs">
+                <span class="social-tab"><span class="bi-cn">关注</span><span class="bi-en">Following</span></span>
+                <span class="social-tab active"><span class="bi-cn">推荐</span><span class="bi-en">For You</span></span>
+                <span class="social-live"><span class="bi-cn">🔍 探测</span><span class="bi-en">🔍 Scan</span></span>
+            </div>
+            <div class="social-feed-area" id="discoverPostContainer"></div>
+            </div>
+        <div class="phone-bottom-nav">
+            <div class="nav-item active"><span>🏠</span><span class="bi-cn">首页</span><span class="bi-en">Home</span></div>
+            <div class="nav-item"><span>🔍</span><span class="bi-cn">发现</span><span class="bi-en">Explore</span></div>
+            <div class="nav-item"><span>➕</span><span class="bi-cn">发布</span><span class="bi-en">Post</span></div>
+            <div class="nav-item"><span>💬</span><span class="bi-cn">消息</span><span class="bi-en">Messages</span></div>
+            <div class="nav-item"><span>👤</span><span class="bi-cn">我</span><span class="bi-en">Me</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 3. 刷帖页（短视频式界面） ===== -->
+<div class="screen" id="screen-feed">
+    <div class="phone-device">
+        <div class="phone-notch"></div>
+        <div class="phone-status-bar"><span>9:41</span><span>📶 🔋</span></div>
+        <div class="social-app">
+            <div class="feed-progress-bar"><div class="feed-progress-fill" id="feedProgressFill"></div></div>
+            <div class="social-top-tabs">
+                <span class="social-tab"><span class="bi-cn">关注</span><span class="bi-en">Following</span></span>
+                <span class="social-tab active"><span class="bi-cn">推荐</span><span class="bi-en">For You</span></span>
+                <span class="social-live" id="feedRound"><span class="bi-cn">第 1 轮</span><span class="bi-en">Round 1</span></span>
+            </div>
+            <div class="social-feed-area" id="postContainer"></div>
+        </div>
+        <div class="phone-bottom-nav">
+            <div class="nav-item active"><span>🏠</span><span class="bi-cn">首页</span><span class="bi-en">Home</span></div>
+            <div class="nav-item"><span>🔍</span><span class="bi-cn">发现</span><span class="bi-en">Explore</span></div>
+            <div class="nav-item"><span>➕</span><span class="bi-cn">发布</span><span class="bi-en">Post</span></div>
+            <div class="nav-item"><span>💬</span><span class="bi-cn">消息</span><span class="bi-en">Messages</span></div>
+            <div class="nav-item"><span>👤</span><span class="bi-cn">我</span><span class="bi-en">Me</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 5. 刷完感受 ===== -->
+<div class="screen" id="screen-final">
+    <div class="emoji-big">🧐</div>
+    <div class="stance-question"><span class="bi-cn">刷完这些内容后，你的感受是？</span><span class="bi-en">After scrolling, how do you feel?</span></div>
+    <div class="stance-options" id="finalOptions"></div>
+</div>
+
+<!-- ===== 6. 结果揭示 ===== -->
+<div class="screen" id="screen-result">
+    <div class="result-container" id="resultContainer"></div>
+</div>
+
+<!-- ===== 7. 分数页 ===== -->
+<div class="screen" id="screen-score">
+    <div class="result-container" id="scoreContainer"></div>
+</div>
+
+</main>
+
+<!-- ===== 算法可视化面板 ===== -->
+<aside class="algo-panel" id="algoPanel">
+    <div class="algo-header">
+        <h2><span class="bi-cn">🤖 推荐算法 · 后台可视化</span><span class="bi-en">🤖 Algorithm · Live View</span></h2>
+        <span class="algo-status" id="algoStatus"><span class="bi-cn">● 运行中</span><span class="bi-en">● Running</span></span>
+    </div>
+    <div class="algo-body">
+        <div class="algo-section">
+            <h3><span class="bi-cn">📊 你的兴趣画像（实时更新）</span><span class="bi-en">📊 Your interest profile (live)</span></h3>
+            <div id="algoScores"></div>
+        </div>
+        <div class="algo-section">
+            <h3><span class="bi-cn">⚙️ 当前推荐规则</span><span class="bi-en">⚙️ Current rules</span></h3>
+            <div id="algoRules"></div>
+        </div>
+        <div class="algo-section">
+            <h3><span class="bi-cn">📈 下轮内容配比预测</span><span class="bi-en">📈 Next round mix</span></h3>
+            <div id="algoMix"></div>
+        </div>
+        <div class="algo-section">
+            <h3><span class="bi-cn">🎯 下一条推荐权重</span><span class="bi-en">🎯 Next post weights</span></h3>
+            <div class="algo-next-preview" id="algoNext"></div>
+        </div>
+        <div class="algo-section algo-log-section">
+            <h3><span class="bi-cn">📝 操作日志 · 每次点击都在教算法</span><span class="bi-en">📝 Action log · Every tap trains the algo</span></h3>
+            <div class="algo-log" id="algoLog"></div>
+        </div>
+    </div>
+</aside>
+
+</div>
+
+<script>
+// ===========================
+// 🌐 语言（与泡泡宇宙主页同步）
+// ===========================
+let LANG = 'cn';
+
+(function initLangFromUrl() {
+    const p = new URLSearchParams(location.search);
+    LANG = (p.get('lang') || 'cn').toLowerCase() === 'en' ? 'en' : 'cn';
+    document.body.classList.add('lang-' + LANG);
+})();
+
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'bubble-lang') setGameLang(e.data.lang);
+});
+
+function setGameLang(l) {
+    LANG = l === 'en' ? 'en' : 'cn';
+    document.body.classList.remove('lang-cn', 'lang-en');
+    document.body.classList.add('lang-' + LANG);
+    refreshGameLangUI();
+}
+
+function isEn() { return LANG === 'en'; }
+function txt(cn, en) { return isEn() ? en : cn; }
+function catName(cat) {
+    const m = CATEGORY_META[cat];
+    return isEn() ? m.nameEn : m.name;
+}
+function pText(p, stubIdx = 0) {
+    if (!isEn()) return p.content;
+    if (p.contentEn) return p.contentEn;
+    const stubs = EN_POST_STUBS[p.category];
+    return stubs ? stubs[stubIdx % stubs.length] : p.content;
+}
+function pSource(p) { return isEn() ? (p.sourceEn || p.source) : p.source; }
+
+function refreshGameLangUI() {
+    if (state.phase === 'discover') {
+        const step = state.discoverStep;
+        buildDiscoverPosts();
+        state.discoverStep = Math.min(step, state.discoverPosts.length);
+        if (state.discoverStep < state.discoverPosts.length) showDiscoverPost();
+    }
+    else if (state.phase === 'feed') {
+        if (state.postIndex < state.totalPosts) showCurrentPost();
+        updateRoundLabel();
+    }
+    if (document.getElementById('screen-final').classList.contains('active')) initFinalAwareness();
+    updateAlgoPanel();
+    renderAlgoLog();
+}
+
+// ===========================
+// 🎮 内容分类 & 数据
+// ===========================
+
+const CATEGORY_META = {
+    meme:    { emoji: '🗿', name: '梗图抽象', nameEn: 'Memes', color: '#a855f7' },
+    funny:   { emoji: '😂', name: '憋笑挑战', nameEn: 'Try Not to Laugh', color: '#f59e0b' },
+    gaming:  { emoji: '🎮', name: '游戏开黑', nameEn: 'Gaming', color: '#6366f1' },
+    anime:   { emoji: '🎌', name: '动漫二次元', nameEn: 'Anime', color: '#ec4899' },
+    school:  { emoji: '🏫', name: '校园日常', nameEn: 'School Life', color: '#14b8a6' },
+    food:    { emoji: '🍜', name: '干饭人', nameEn: 'Foodie', color: '#f97316' },
+    pets:    { emoji: '🐱', name: '萌宠治愈', nameEn: 'Cute Pets', color: '#eab308' },
+    dance:   { emoji: '💃', name: '魔性舞蹈', nameEn: 'Dance', color: '#ef4444' },
+    sport:   { emoji: '⚽', name: '运动高燃', nameEn: 'Sports', color: '#22c55e' },
+    diy:     { emoji: '✂️', name: '手工整活', nameEn: 'DIY Crafts', color: '#06b6d4' },
+    music:   { emoji: '🎵', name: '神曲卡点', nameEn: 'Music', color: '#10b981' },
+    quiz:    { emoji: '🔮', name: '测评占卜', nameEn: 'Quizzes', color: '#8b5cf6' },
+};
+
+const ALL_CATS = Object.keys(CATEGORY_META);
+
+const POSTS = {
+    meme: [
+        { source: '抽象大师', avatar: '🗿', content: '当老师说"再讲一分钟"结果讲了半节课——全班表情be like：😐😐😐', contentEn: 'Teacher says "one more minute"—half a period later class be like: 😐😐😐', likes: '9.8万', comments: '3.2万' },
+        { source: '梗图仓库', avatar: '📦', content: '《我：就玩5分钟手机》→《再看已是凌晨2点》 meme 图太真实了，已转发到班级群', contentEn: '"Me: 5 min on phone" → "2 AM already" meme—too real, shared to class group', likes: '7.6万', comments: '2.1万' },
+        { source: '精神状态', avatar: '🫠', content: '周一早读的我 vs 周五放学的我，两张图概括整个初中生活', contentEn: 'Monday morning me vs Friday after school—two pics sum up middle school', likes: '11万', comments: '4.5万' },
+        { source: '谐音梗扣钱', avatar: '💸', content: '物理老师：这是"压轴题"。我脑子里的我：这是"压垮我的最后一题"', contentEn: 'Physics teacher: "final hard problem." My brain: "the problem that crushes me"', likes: '5.4万', comments: '1.8万' },
+        { source: '班级群日常', avatar: '👥', content: '班长：@全体成员 交作业。群里瞬间从99+变成0人在线，经典名场面', contentEn: 'Monitor @all submit homework—group drops from 99+ to 0 online instantly', likes: '8.2万', comments: '2.9万' },
+        { source: 'emoji文学', avatar: '😭', content: '用emoji写小作文：😴→📱→😱→📝→😭→🌅 一个初中生的夜晚', contentEn: 'Emoji essay: 😴→📱→😱→📝→😭→🌅—a middle schooler\'s night', likes: '6.3万', comments: '1.5万' },
+        { source: '迷惑行为', avatar: '🤡', content: '同桌上课偷吃辣条被点名，站起来时袋子粘裤子上了……全场憋笑失败', contentEn: 'Deskmate snacking in class—chip bag stuck to pants when standing. Class lost it', likes: '10万', comments: '3.8万' },
+        { source: '网络热梗', avatar: '🔥', content: '"我请问呢" "那很坏了" "真香警告"——7年级必懂梗大全，少一个都out', contentEn: '"I ask you" "that\'s bad" "so good tho"—7th grade meme pack, miss one and you\'re out', likes: '4.9万', comments: '9800' },
+    ],
+    funny: [
+        { source: '憋笑挑战', avatar: '😂', content: '【憋笑挑战】看搞笑视频不能笑！第3个我就破功了，你能撑到第几个？', likes: '12万', comments: '5.1万' },
+        { source: '不要笑出声', avatar: '🤫', content: '图书馆憋笑挑战：同桌给你看搞笑视频，笑出声就输了。我已经输了3次', likes: '8.7万', comments: '2.4万' },
+        { source: '课堂整蛊', avatar: '🎭', content: '趁同桌回答问题时，在他椅子后面比耶——老师突然回头，我完了', likes: '9.1万', comments: '3.2万' },
+        { source: '翻车合集', avatar: '💥', content: '运动会上跳远起跳太早，人在空中停了0.5秒——全校笑了一整年', likes: '7.4万', comments: '2.8万' },
+        { source: '魔性笑声', avatar: '😆', content: '这笑声太传染了！第一个同学笑→第二个→第三个→全班→连老师都笑了', likes: '6.8万', comments: '1.9万' },
+        { source: '配音鬼才', avatar: '🎙', content: '给班主任的日常配上了动漫BGM，居然毫无违和感，评论区全是人才', likes: '5.6万', comments: '1.6万' },
+        { source: '尴尬瞬间', avatar: '🫣', content: '喊错老师名字、进错教室、叫错同学——初中生尴尬三大件，你中了几条？', likes: '8.9万', comments: '3.5万' },
+        { source: '沙雕实验', avatar: '🧪', content: '科学课用柠檬发电点亮LED，结果全班开始比赛谁的柠檬灯最亮，老师放弃了', likes: '4.2万', comments: '7600' },
+    ],
+    gaming: [
+        { source: '蛋仔派对', avatar: '🥚', content: '新地图隐藏彩蛋找到了！全班就我知道，但同桌威胁我不说就绝交……', likes: '8.5万', comments: '2.3万' },
+        { source: '王者开黑', avatar: '👑', content: '五排开黑：我0-8-2，被举报挂机。其实我在认真听课，只是手在桌下操作', likes: '7.2万', comments: '3.1万' },
+        { source: 'MC建筑党', avatar: '⛏', content: '在Minecraft里复刻了学校教学楼，发到班级群，班主任默默点了个赞', likes: '6.4万', comments: '1.4万' },
+        { source: '第五人格', avatar: '🎩', content: '溜鬼3分钟被队友夸"大神"，其实是因为我太菜跑错方向了', likes: '5.8万', comments: '9800' },
+        { source: '和平精英', avatar: '🔫', content: '落地成盒10连，队友说"没事下把带你"。下把我又成盒了……', likes: '4.9万', comments: '8200' },
+        { source: '游戏攻略', avatar: '📖', content: '周末游戏时间攻略：周五求爸妈→周六肝→周日晚焦虑写不完作业', likes: '9.3万', comments: '2.7万' },
+        { source: '电竞梦', avatar: '🏆', content: '校队选拔LOL，我辅助玩得太菜被劝退。转玩蛋仔，发现我是天才', likes: '3.8万', comments: '6100' },
+        { source: '原神日常', avatar: '🌟', content: '抽卡歪了！攒了2个月原石，结果出了常驻……已破防，求安慰', likes: '7.1万', comments: '2.2万' },
+    ],
+    anime: [
+        { source: '追番少年', avatar: '🎌', content: '这季新番全班都在追！你不看就接不上课间话题了，快补！', likes: '6.7万', comments: '1.5万' },
+        { source: '漫画安利', avatar: '📚', content: '借你漫画别外传！这本太好看了，被没收别说是我借的', likes: '5.2万', comments: '8900' },
+        { source: 'Cosplay', avatar: '✨', content: '学校动漫社招新，有人Cos了课本里的历史人物，太抽象了', likes: '8.1万', comments: '2.1万' },
+        { source: '同人画手', avatar: '🎨', content: '7年级学妹画的同人图火了，点赞30万。我画的火柴人还在抽屉里', likes: '4.8万', comments: '7200' },
+        { source: '动漫台词', avatar: '💬', content: '"错的不是我，是这个世界"——中二台词大全，念出来会社死但忍不住', likes: '7.6万', comments: '2.4万' },
+        { source: '周边分享', avatar: '🛍', content: '用零花钱买了徽章，被妈妈发现说"这什么玩意儿"。我：这是艺术！', likes: '3.9万', comments: '5600' },
+        { source: '番剧吐槽', avatar: '📺', content: '主角每集都要喊"我要变强"，我：你先变强把数学及格的', likes: '6.2万', comments: '1.8万' },
+        { source: '二次元梗', avatar: '😺', content: '猫耳发卡+校服=全校识别二次元。别问我是怎么知道的', likes: '5.5万', comments: '9400' },
+    ],
+    school: [
+        { source: '早八人', avatar: '😴', content: '7:20到校，我6:50还在被窝里。妈妈：你再不起我就告诉老师了！', likes: '10万', comments: '4.2万' },
+        { source: '作业本', avatar: '📝', content: '「老师，我作业忘带了」——初中最常用借口Top1，你用过吗？', likes: '8.4万', comments: '3.1万' },
+        { source: '同桌日记', avatar: '🪑', content: '同桌借我半块橡皮，我记了3年。现在分班了，想还找不到人', likes: '6.7万', comments: '2.5万' },
+        { source: '跑操吐槽', avatar: '🏃', content: '跑操音乐一响，全班速度：前10米冲刺→中间散步→最后50米冲刺给主任看', likes: '9.2万', comments: '3.6万' },
+        { source: '老师名场面', avatar: '👩‍🏫', content: '数学老师：这题很简单。全班：？？？ 沉默是今晚的教室', likes: '11万', comments: '4.8万' },
+        { source: '小卖部', avatar: '🏪', content: '下课铃=百米冲刺。小卖部阿姨：你们7年级的比6年级还能挤', likes: '7.8万', comments: '2.2万' },
+        { source: '考试周', avatar: '📋', content: '考前：复习不完焦虑。考中：这题我见过！考后：好像见过但忘了……', likes: '8.9万', comments: '3.3万' },
+        { source: '班级群', avatar: '📱', content: '群里发"收到"接龙，发到第47个发现老师说的是"不用回复"……', likes: '6.1万', comments: '2.9万' },
+    ],
+    food: [
+        { source: '食堂测评', avatar: '🍚', content: '今天食堂窗口新菜：看起来像黑暗料理，尝了居然还行？', likes: '7.3万', comments: '1.8万' },
+        { source: '小卖部', avatar: '🌭', content: '辣条+冰可乐=课间快乐套餐。别在教室吃，会被香味出卖', likes: '9.6万', comments: '3.2万' },
+        { source: '干饭人', avatar: '🍜', content: '上午第四节课肚子叫得比老师声音还大，全班都听到了……', likes: '8.1万', comments: '2.7万' },
+        { source: '校门口', avatar: '🍢', content: '校门口炸串摊，放学5分钟排20米。阿姨：你们7年级最能吃', likes: '6.8万', comments: '1.5万' },
+        { source: '带饭党', avatar: '🍱', content: '妈妈做的便当被同学围观："你妈真好"。我：其实我想吃食堂', likes: '5.4万', comments: '8900' },
+        { source: '奶茶续命', avatar: '🧋', content: '月考前全班团购奶茶，班主任进来：你们倒是挺会享受啊', likes: '7.9万', comments: '2.1万' },
+        { source: '泡面达人', avatar: '🍜', content: '宿舍/家里偷偷泡面的正确姿势：听脚步声、散味道、销毁证据', likes: '6.2万', comments: '1.9万' },
+        { source: '美食交换', avatar: '🔄', content: '用我的鸡翅换你的薯片，课间以物易物比小卖部还热闹', likes: '4.7万', comments: '6200' },
+    ],
+    pets: [
+        { source: '云吸猫', avatar: '🐱', content: '学校里的流浪猫"学长"，比我们还熟悉校园，每天准时出现在食堂', likes: '12万', comments: '3.5万' },
+        { source: '同桌的仓鼠', avatar: '🐹', content: '同桌把仓鼠装笔袋里带来学校，它探出头时全班都"哇——"', likes: '8.4万', comments: '2.1万' },
+        { source: '养狗日常', avatar: '🐕', content: '写完作业遛狗，狗比我还开心。妈妈说：它不用考试当然开心', likes: '7.1万', comments: '9800' },
+        { source: '宠物成精', avatar: '🤣', content: '我家猫会开门！半夜进我房间盯着我写作业，压力好大', likes: '9.2万', comments: '2.8万' },
+        { source: '治愈瞬间', avatar: '💛', content: '考砸了回家，狗摇着尾巴扑过来——至少还有你等我', likes: '8.7万', comments: '2.4万' },
+        { source: '异宠', avatar: '🦎', content: '同学养守宫，说比养作业简单。我：守宫不会咬人，作业会', likes: '4.3万', comments: '5600' },
+        { source: '云养宠', avatar: '☁️', content: '爸妈不让养，我只能云吸别人的猫。已关注20个萌宠博主', likes: '6.5万', comments: '1.2万' },
+        { source: '萌宠梗图', avatar: '😺', content: '猫咪踩奶视频循环20遍，今日份治愈已充值完毕', likes: '5.8万', comments: '8100' },
+    ],
+    dance: [
+        { source: '魔性舞蹈', avatar: '💃', content: '【挑战】30秒学会最近爆火的舞蹈！我学了2小时还在同手同脚', likes: '9.4万', comments: '3.1万' },
+        { source: '课间操', avatar: '🕺', content: '新版课间操太魔性，全班跳得像在做法。但确实比跑步开心', likes: '7.8万', comments: '2.5万' },
+        { source: '手势舞', avatar: '✋', content: '不用露脸的手势舞教程，社恐友好！已在被窝里练会', likes: '6.2万', comments: '1.6万' },
+        { source: '班级表演', avatar: '🎭', content: '元旦晚会我们班跳了科目三，视频被传到年级群，出名了', likes: '8.9万', comments: '3.4万' },
+        { source: '模仿挑战', avatar: '🔄', content: '模仿网红舞蹈发班级群，被评论"像在做广播体操"', likes: '5.6万', comments: '2.2万' },
+        { source: '卡点舞', avatar: '🎵', content: '神曲+简单动作=魔性卡点。我已经会了，同桌还在同手同脚', likes: '7.1万', comments: '1.8万' },
+        { source: '舞蹈翻车', avatar: '💥', content: '文艺汇演跳舞忘动作，现场即兴发挥，居然赢了', likes: '6.4万', comments: '2.9万' },
+        { source: '宅舞', avatar: '🎌', content: '动漫社跳宅舞，非二次元同学：你们在跳什么？我们在跳快乐', likes: '4.8万', comments: '7200' },
+    ],
+    sport: [
+        { source: '篮球时刻', avatar: '🏀', content: '体育课投进三分球！全场欢呼，这高光够我吹一学期', likes: '8.6万', comments: '2.3万' },
+        { source: '足球', avatar: '⚽', content: '校队选拔，我射门踢飞到了隔壁班窗口。教练：你过吧', likes: '6.9万', comments: '1.9万' },
+        { source: '体测', avatar: '📏', content: '体测800米：前200米冲刺→中间走路→最后100米装冲刺给体育老师看', likes: '10万', comments: '4.1万' },
+        { source: '羽毛球', avatar: '🏸', content: '课间占场打羽毛球，打到上课铃响还不肯走，被班长追着回教室', likes: '5.4万', comments: '9800' },
+        { source: '球星', avatar: '⭐', content: '库里/詹姆斯/C罗最新进球集锦，男生课间必看，女生也偷偷看', likes: '7.2万', comments: '1.5万' },
+        { source: '运动翻车', avatar: '🤸', content: '跳远踩线3次，最后干脆躺平——反正今天运动量够了', likes: '8.1万', comments: '3.2万' },
+        { source: '校运会', avatar: '🏆', content: '接力赛掉棒被全班"安慰"，其实他们在憋笑。我懂', likes: '6.7万', comments: '2.4万' },
+        { source: '跳绳', avatar: '🪢', content: '1分钟跳绳考试，我跳了50个，旁边同学跳了180。差距', likes: '4.9万', comments: '7600' },
+    ],
+    diy: [
+        { source: '手工达人', avatar: '✂️', content: '用废纸箱做了手机支架，被同桌求链接。我：没有链接，只有手艺', likes: '5.8万', comments: '1.4万' },
+        { source: '折纸', avatar: '📄', content: '上课折纸飞机，扔出去落在老师讲台上。全班：不是我', likes: '7.6万', comments: '2.8万' },
+        { source: '笔袋改造', avatar: '🎒', content: '把笔袋贴满贴纸和徽章，独一无二。同学：你这像移动广告牌', likes: '4.2万', comments: '6200' },
+        { source: '科学小制作', avatar: '🔬', content: '科技节用塑料瓶做水火箭，发射成功！全场"哇——"', likes: '6.4万', comments: '1.6万' },
+        { source: '画画', avatar: '🖍', content: '课本空白处画满涂鸦，被借走传阅。老师说：画得不错但别在课本上', likes: '8.3万', comments: '2.1万' },
+        { source: 'DIY礼物', avatar: '🎁', content: '用零花钱给妈妈做生日贺卡，她感动哭了。我：其实花了3小时', likes: '5.1万', comments: '8900' },
+        { source: '橡皮章', avatar: '🧽', content: '刻橡皮章刻到手指起泡，但盖出来超有成就感', likes: '3.9万', comments: '5100' },
+        { source: '改造旧物', avatar: '♻️', content: '旧T恤改包、快递盒改收纳，省钱又环保，7年级省钱攻略', likes: '4.6万', comments: '6800' },
+    ],
+    music: [
+        { source: '神曲', avatar: '🎵', content: '这首BGM太洗脑了！脑子里循环一整天，写作业都在哼', likes: '9.1万', comments: '2.8万' },
+        { source: '翻唱', avatar: '🎤', content: '7年级学妹翻唱爆火，同学：我们年级出的？与有荣焉', likes: '6.7万', comments: '1.5万' },
+        { source: 'K-pop', avatar: '💜', content: '新舞+新歌一起学，课间在走廊练副歌舞步被主任看到', likes: '8.4万', comments: '2.2万' },
+        { source: '吉他', avatar: '🎸', content: '自学吉他3个月，班级晚会弹唱，紧张到忘词但掌声雷动', likes: '5.2万', comments: '9800' },
+        { source: '说唱', avatar: '🎤', content: '用rap写周记交上去，语文老师：有创意，但请用散文', likes: '7.8万', comments: '3.1万' },
+        { source: '古风', avatar: '🏮', content: '《孤勇者》之后全班又迷上了古风歌，课间合唱像合唱团', likes: '6.1万', comments: '1.4万' },
+        { source: '铃声', avatar: '📱', content: '把神曲设成闹钟，现在一听前奏就条件反射起床——痛苦', likes: '4.8万', comments: '7200' },
+        { source: '口琴', avatar: '🎹', content: '口琴吹《小星星》被夸，吹《青花瓷》被说像吹口哨', likes: '3.6万', comments: '4500' },
+    ],
+    quiz: [
+        { source: '性格测试', avatar: '🔮', content: '「测测你是哪种同学」：学神型/摸鱼型/社交牛逼症/透明人。我：全中', likes: '11万', comments: '4.2万' },
+        { source: '运势', avatar: '✨', content: '「今日运势：宜补作业，忌玩手机」。太准了，我破防了', likes: '8.3万', comments: '2.9万' },
+        { source: 'CP测试', avatar: '💕', content: '「你和同桌的默契度」——全班都在测，同桌测完不敢看我', likes: '9.6万', comments: '3.8万' },
+        { source: '动物塑', avatar: '🐱', content: '「你是哪种动物」：猫/狗/仓鼠/水豚。结果我是水豚：摆烂之王', likes: '7.1万', comments: '2.1万' },
+        { source: '颜色', avatar: '🌈', content: '「你的幸运色」测出来是绿色——今天数学考砸了，绿色是错题色？', likes: '5.4万', comments: '1.6万' },
+        { source: 'MBTI简化版', avatar: '🧠', content: '「E人I人」测试刷屏。内向同学在角落：别cue我', likes: '8.9万', comments: '3.2万' },
+        { source: '未来职业', avatar: '🔭', content: '测出来是「游戏设计师」。我妈：先把数学及格的', likes: '6.8万', comments: '2.4万' },
+        { source: '缘分', avatar: '🎴', content: '「你和暗恋对象的匹配度」——不敢测，怕结果太假或太真', likes: '10万', comments: '5.1万' },
+    ],
+};
+
+// English feed text when contentEn not set (matches category vibe)
+const EN_POST_STUBS = {
+    meme: ['Monday me vs Friday me—shared to class group', 'Phone: 5 min → 2 AM meme', 'Class group goes silent when homework @all', 'Emoji story of a school night', 'Teacher "one minute" = half period', 'Meme pack every 7th grader knows', 'Deskmate snack disaster—bag on pants', 'When monitor says submit homework…'],
+    funny: ['[Try not to laugh] I failed on #3—your turn?', 'Library challenge—lost 3 times already', 'Photo bomb deskmate—teacher turned around', 'Long jump too early—froze mid-air, legendary', 'One laugh spreads through whole class', 'Dubbed teacher with anime BGM—no regrets', 'Wrong name, wrong room—embarrassment trio', 'Lemon battery contest—teacher surrendered'],
+    gaming: ['Hidden map egg—only I know (don\'t tell)', 'Ranked 0-8-2—I was listening under desk', 'Built school in Minecraft—teacher liked it', 'Escaped ghost 3 min—ran wrong way', 'Landing crate streak—teammate still kind', 'Weekend gaming vs homework anxiety loop', 'Esports tryout fail—found talent in Eggy Party', 'Gacha pull ruined—2 months of gems gone'],
+    anime: ['New season—miss it and miss lunch talk', 'Borrow manga secretly—don\'t snitch', 'Cosplay club recruitment was… abstract', '7th grader fan art got 300k likes', 'Cringe lines we still quote anyway', 'Mom asked why I bought a badge', 'Protagonist yells "get stronger"—math first', 'Cat ears + uniform = instant tell'],
+    school: ['6:50 still in bed—school at 7:20', 'Forgot homework excuse #1 in class', 'Half eraser debt from deskmate—3 years', 'PE run: sprint then stroll trick', 'Teacher: "easy question"—silent class', 'Bell = sprint to snack shop', 'Exam: knew it → forgot it', 'Reply chain to #47—teacher said don\'t reply'],
+    food: ['Cafeteria mystery dish—surprisingly OK', 'Spicy strips + cola—don\'t eat in class', 'Stomach louder than teacher on period 4', 'Snack stall line 20m after school', 'Mom\'s lunchbox envy from classmates', 'Group milk tea order before monthly test', 'Instant noodle stealth skills level 99', 'Trade chicken wing for chips at break'],
+    pets: ['Stray cat "senior" owns the cafeteria', 'Hamster in pencil case—class went "whoa"', 'Dog happy I finished homework (no exam)', 'Cat opens door to watch me study', 'Dog greets me after bad test score', 'Classmate\'s gecko vs homework difficulty', 'Cloud pet 20 accounts—parents said no', 'Cat kneading video—healing charged'],
+    dance: ['Learn viral dance in 30s—I took 2 hours', 'New PE dance feels like a ritual', 'Hand dance tutorial—learned in bed', 'Class did viral dance at party—famous now', 'Impression: "like morning exercises"', 'Beat drop dance—deskmate still off-beat', 'Forgot moves on stage—improv won', 'Anime club dance—outsiders confused, happy inside'],
+    sport: ['Made a 3-pointer—highlight of semester', 'Shot into wrong window—still passed tryout', '800m: sprint, walk, fake sprint', 'Badminton until bell—monitor chased us', 'Sports star highlight reel at lunch', 'Long jump 3 line violations—lying down OK', 'Relay baton drop—"comfort" from class', 'Jump rope 50 vs deskmate 180'],
+    diy: ['Cardboard phone stand—craft not link', 'Paper plane landed on teacher desk', 'Sticker-covered pencil case = billboard', 'Water rocket launch—science fair wow', 'Doodles in textbook went viral in class', 'Birthday card for mom—3 hours, tears', 'Eraser stamp blisters but proud', 'Old T-shirt bag—7th grade life hack'],
+    music: ['BGM stuck in head during math', '7th grader cover blew up—our grade!', 'K-pop dance in hallway—principal saw', 'Guitar at party—forgot lyrics, applause anyway', 'Rap for weekly journal—teacher wanted essay', 'Class chorus ancient style song', 'Alarm is cursed meme song now', 'Harmonica "Little Star" vs "Blue and White Porcelain"'],
+    quiz: ['Which student type are you? I got all four', 'Today\'s luck: homework yes, phone no—accurate', 'Desk mate compatibility—awkward silence after', 'Animal persona: capybara = burnout king', 'Lucky color green = wrong answer color', 'E vs I test—introverts hiding', 'Future job: game designer—mom said math', 'Crush match %—too real or too fake'],
+};
+
+const DISCOVERY_PAIRS = [
+    {
+        question: '课间10分钟，你更想刷哪个？',
+        left:  { cat: 'meme',  preview: '「周一的我 vs 周五的我」梗图，太真实了已转发班级群' },
+        right: { cat: 'funny', preview: '【憋笑挑战】看搞笑视频不能笑，你能撑到第几个？' },
+    },
+    {
+        question: '同桌发来两个视频，你先看？',
+        left:  { cat: 'gaming', preview: '蛋仔派对新地图彩蛋！全班就我知道，但不敢说' },
+        right: { cat: 'anime',  preview: '这季新番全班都在追，你不看接不上话题了' },
+    },
+    {
+        question: '写不完作业摸鱼时，你会点？',
+        left:  { cat: 'school', preview: '「老师：这题很简单」全班：？？？——名场面回顾' },
+        right: { cat: 'food',   preview: '校门口炸串摊，放学5分钟排20米，7年级最能吃' },
+    },
+    {
+        question: '抖音推荐两条，你更想看完？',
+        left:  { cat: 'dance', preview: '30秒学会魔性舞蹈！我学了2小时还在同手同脚' },
+        right: { cat: 'music', preview: '这首BGM太洗脑，脑子里循环一整天停不下来' },
+    },
+    {
+        question: '午休刷手机，哪条更吸引你？',
+        left:  { cat: 'pets', preview: '学校流浪猫"学长"比我们还熟悉食堂，每日准时出现' },
+        right: { cat: 'diy',  preview: '用废纸箱做手机支架，同桌求链接：没有链接只有手艺' },
+    },
+    {
+        question: '体育课刚下课，你会点开？',
+        left:  { cat: 'sport', preview: '体测800米：前200冲刺→中间走→最后100米装冲刺' },
+        right: { cat: 'meme',  preview: '跑操音乐一响，全班：前10米冲刺后面全程散步' },
+    },
+    {
+        question: '全班都在转发的，你选哪个？',
+        left:  { cat: 'funny', preview: '图书馆憋笑挑战：笑出声就输了，我已失败3次' },
+        right: { cat: 'quiz',  preview: '「测测你是哪种同学」学神/摸鱼/社交牛逼症/透明人' },
+    },
+    {
+        question: '睡前最后刷一条，你选？',
+        left:  { cat: 'anime', preview: '借你漫画别外传！被没收别说是我借的' },
+        right: { cat: 'school', preview: '「收到」接龙发到第47个，发现老师说不用回复……' },
+    },
+    {
+        question: '小卖部排队时刷到两条，你看？',
+        left:  { cat: 'food',   preview: '辣条+冰可乐=课间快乐套餐，别在教室吃会被香味出卖' },
+        right: { cat: 'gaming', preview: '五排开黑0-8-2被举报，其实我在听课手在桌下操作' },
+    },
+    {
+        question: '最后一题，直觉选！',
+        left:  { cat: 'meme',  preview: '班长@全体成员交作业，群瞬间从99+变0人在线' },
+        right: { cat: 'funny', preview: '同桌上课偷吃辣条被点名，袋子粘裤子上了全场憋笑' },
+    },
+];
+
+const DISCOVERY_PAIRS_EN = [
+    {
+        question: '10-minute break—which do you scroll?',
+        left:  { cat: 'meme',  preview: '"Monday me vs Friday me" meme—so real, shared to class group' },
+        right: { cat: 'funny', preview: '[Try not to laugh] Funny videos—how many can you survive?' },
+    },
+    {
+        question: 'Your deskmate sent two videos—which first?',
+        left:  { cat: 'gaming', preview: 'Eggy Party hidden egg! Only I know—but dare not tell' },
+        right: { cat: 'anime',  preview: 'Everyone\'s watching this season\'s anime—miss it and you\'re out of the loop' },
+    },
+    {
+        question: 'Procrastinating homework—which do you tap?',
+        left:  { cat: 'school', preview: '"This question is easy" teacher says—class: ??? Classic moment' },
+        right: { cat: 'food',   preview: 'Snack stall outside school—20m line in 5 min, 7th graders eat best' },
+    },
+    {
+        question: 'Two recommended videos—which do you finish?',
+        left:  { cat: 'dance', preview: 'Learn the viral dance in 30s—I practiced 2 hours, still off-beat' },
+        right: { cat: 'music', preview: 'This BGM is stuck in my head all day, can\'t stop' },
+    },
+    {
+        question: 'Lunch scroll—which attracts you?',
+        left:  { cat: 'pets', preview: 'Stray cat "senior" knows the cafeteria better than us' },
+        right: { cat: 'diy',  preview: 'Phone stand from cardboard—no link, just craft skills' },
+    },
+    {
+        question: 'After PE—which do you open?',
+        left:  { cat: 'sport', preview: '800m test: sprint 200m → walk → fake sprint at the end' },
+        right: { cat: 'meme',  preview: 'When jog music plays: sprint 10m then stroll the rest' },
+    },
+    {
+        question: 'Everyone\'s sharing—which do you pick?',
+        left:  { cat: 'funny', preview: 'Library laugh challenge—laugh and you lose. I failed 3 times' },
+        right: { cat: 'quiz',  preview: '"What student type are you?" Scholar/slacker/social butterfly/ghost' },
+    },
+    {
+        question: 'Last scroll before bed?',
+        left:  { cat: 'anime', preview: 'Borrow this manga—don\'t tell if it gets confiscated' },
+        right: { cat: 'school', preview: '"Reply received" chain to #47—teacher said no reply needed…' },
+    },
+    {
+        question: 'Waiting at snack shop—which do you watch?',
+        left:  { cat: 'food',   preview: 'Spicy strips + cola = break happiness—don\'t eat in class, smell rats you out' },
+        right: { cat: 'gaming', preview: 'Ranked 0-8-2 reported—I was listening, hands under desk' },
+    },
+    {
+        question: 'Last one—gut pick!',
+        left:  { cat: 'meme',  preview: 'Monitor @all submit homework—group goes from 99+ to 0 online' },
+        right: { cat: 'funny', preview: 'Deskmate caught eating chips—bag stuck to pants, class lost it' },
+    },
+];
+
+function getDiscoveryPairs() { return isEn() ? DISCOVERY_PAIRS_EN : DISCOVERY_PAIRS; }
+
+const AWARENESS_OPTIONS = [
+    { label: '😊 太懂我了，我就爱看这些', labelEn: '😊 It gets me—I love this stuff', value: 1 },
+    { label: '🤔 挺好看的，但偶尔也想换换口味', labelEn: '🤔 Nice, but I want variety sometimes', value: 2 },
+    { label: '😰 感觉世界变窄了，只剩这一种内容', labelEn: '😰 My world feels narrow—only one type left', value: 3 },
+];
+
+// ===========================
+// 🎮 游戏状态
+// ===========================
+let state = {
+    preferences: {},
+    primaryCategory: null,
+    discoverStep: 0,
+    discoverPosts: [],
+    phase: 'idle',
+    round: 1,
+    postIndex: 0,
+    totalPosts: 0,
+    likes: {},
+    comments: {},
+    shares: {},
+    saves: {},
+    skips: {},
+    seen: {},
+    currentPosts: [],
+    allRoundPosts: [],
+    finalAwareness: 0,
+    algoLog: [],
+    totalClicks: 0,
+};
+
+const ROUND_RULES = {
+    1: { prefPct: 62, label: '个性推荐', labelEn: 'For You', rule: '偏好类型约占 62%，其余 38% 随机混入', ruleEn: '~62% preferred type, 38% random mix' },
+    2: { prefPct: 87, label: '越刷越懂你', labelEn: 'Knows You Better', rule: '偏好类型升至 87%，其他类型被大幅压缩', ruleEn: 'Preferred type rises to 87%, others squeezed out' },
+    3: { prefPct: 100, label: '精准茧房', labelEn: 'Bubble Locked', rule: '100% 推送最高分类型，信息茧房完全形成', ruleEn: '100% top-scoring type—filter bubble complete' },
+};
+
+function initCategoryStats() {
+    ALL_CATS.forEach(c => {
+        state.likes[c] = 0;
+        state.comments[c] = 0;
+        state.shares[c] = 0;
+        state.saves[c] = 0;
+        state.skips[c] = 0;
+        state.seen[c] = 0;
+        state.preferences[c] = 0;
+    });
+}
+
+function categoryInterestScore(c) {
+    return state.preferences[c]
+        + state.likes[c] * 2
+        + state.comments[c] * 1
+        + state.shares[c] * 1
+        + state.saves[c] * 1.5
+        - state.skips[c] * 0.5;
+}
+
+const DISCOVER_ENGAGE = { like: 2, comment: 1, share: 1, save: 1.5 };
+const ENGAGE_META = {
+    like:    { logCn: '❤️ 点赞', logEn: '❤️ Liked',    feedCn: '→ 权重 +2', feedEn: '→ weight +2',    type: 'like' },
+    comment: { logCn: '💬 评论', logEn: '💬 Commented', feedCn: '→ 权重 +1', feedEn: '→ weight +1',    type: 'comment' },
+    share:   { logCn: '↗️ 分享', logEn: '↗️ Shared',    feedCn: '→ 权重 +1', feedEn: '→ weight +1',    type: 'share' },
+    save:    { logCn: '🔖 收藏', logEn: '🔖 Saved',     feedCn: '→ 权重 +1.5', feedEn: '→ weight +1.5', type: 'save' },
+};
+
+function buildSideActionsHtml(handler, counts) {
+    const c = counts || {};
+    return `
+        <button class="social-action-btn like-btn" onclick="${handler}('like')">
+            <div class="social-action-icon">❤️</div>
+            <span class="social-action-count">${c.like != null ? c.like : txt('喜欢', 'Like')}</span>
+        </button>
+        <button class="social-action-btn" onclick="${handler}('comment')">
+            <div class="social-action-icon">💬</div>
+            <span class="social-action-count">${c.comment != null ? c.comment : txt('评论', 'Comment')}</span>
+        </button>
+        <button class="social-action-btn" onclick="${handler}('share')">
+            <div class="social-action-icon">↗️</div>
+            <span class="social-action-count">${c.share != null ? c.share : txt('分享', 'Share')}</span>
+        </button>
+        <button class="social-action-btn" onclick="${handler}('save')">
+            <div class="social-action-icon">🔖</div>
+            <span class="social-action-count">${c.save != null ? c.save : txt('收藏', 'Save')}</span>
+        </button>
+        <button class="social-action-btn skip-btn" onclick="${handler}('skip')">
+            <div class="social-action-icon">👉</div>
+            <span class="social-action-count">${txt('划走', 'Skip')}</span>
+        </button>`;
+}
+
+// ===========================
+// 🔧 工具函数
+// ===========================
+function goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(screenId);
+    target.classList.add('active');
+    target.scrollTop = 0;
+    window.scrollTo(0, 0);
+
+    const algoScreens = ['screen-discover', 'screen-feed'];
+    document.body.classList.toggle('algo-mode', algoScreens.includes(screenId));
+    if (algoScreens.includes(screenId)) updateAlgoPanel();
+}
+
+function getCategoryScores() {
+    return ALL_CATS.map(c => ({
+        cat: c,
+        score: Math.max(0, categoryInterestScore(c)),
+    })).sort((a, b) => b.score - a.score);
+}
+
+function getRecommendWeights() {
+    const preferred = getPreferredCategory();
+    const roundBoost = { 1: 1.5, 2: 2.5, 3: 4 }[state.round] || 1;
+    const raw = {};
+    let total = 0;
+    ALL_CATS.forEach(c => {
+        raw[c] = Math.max(0.5, categoryInterestScore(c));
+        if (c === preferred) raw[c] *= roundBoost;
+        total += raw[c];
+    });
+    return ALL_CATS.map(c => ({
+        cat: c,
+        pct: Math.round(raw[c] / total * 100),
+        score: raw[c],
+    })).sort((a, b) => b.pct - a.pct);
+}
+
+function logAlgoEvent(text, type = 'system') {
+    const time = new Date().toLocaleTimeString(isEn() ? 'en-US' : 'zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    state.algoLog.unshift({ text, type, time });
+    if (state.algoLog.length > 20) state.algoLog.pop();
+    if (type !== 'system') state.totalClicks++;
+    renderAlgoLog();
+}
+
+function renderAlgoLog() {
+    const el = document.getElementById('algoLog');
+    if (!el) return;
+    if (state.algoLog.length === 0) {
+        el.innerHTML = '<div class="algo-log-item system">' + txt('等待你的第一次操作…', 'Waiting for your first action…') + '</div>';
+        return;
+    }
+    el.innerHTML = state.algoLog.map(item => `
+        <div class="algo-log-item ${item.type}">
+            <span style="color:#555">${item.time}</span> · ${item.text}
+        </div>
+    `).join('');
+}
+
+function updateAlgoPanel() {
+    if (!document.body.classList.contains('algo-mode')) return;
+
+    const scores = getCategoryScores();
+    const maxScore = Math.max(scores[0].score, 1);
+    const preferred = getPreferredCategory();
+    const prefMeta = CATEGORY_META[preferred];
+    const weights = getRecommendWeights();
+    const roundRule = ROUND_RULES[state.round] || ROUND_RULES[1];
+
+    // 兴趣画像
+    document.getElementById('algoScores').innerHTML = scores.map(({ cat, score }) => {
+        const meta = CATEGORY_META[cat];
+        const pct = Math.round(score / maxScore * 100);
+        const isTop = cat === preferred;
+        return `
+            <div class="algo-score-row" ${isTop ? 'style="opacity:1"' : ''}>
+                <div class="algo-score-label">${meta.emoji} ${catName(cat)}</div>
+                <div class="algo-score-track">
+                    <div class="algo-score-fill" style="width:${pct}%; background:${meta.color}${isTop ? '' : '99'}"></div>
+                </div>
+                <div class="algo-score-num" style="${isTop ? 'color:' + meta.color + ';font-weight:700' : ''}">${score.toFixed(1)}</div>
+            </div>`;
+    }).join('');
+
+    // 推荐规则
+    const phase = state.phase;
+    let rulesHtml = '';
+    if (phase === 'discover') {
+        rulesHtml = `
+            <div class="algo-rule-card active">
+                <div class="algo-rule-title">${txt('🔍 模式：偏好探测', '🔍 Mode: Preference scan')}</div>
+                <div class="algo-rule-desc">${txt(`❤️ 点赞 +2 · 💬 评论 +1 · ↗️ 分享 +1 · 🔖 收藏 +1.5<br>👉 划走略过 → 下一个主题（共 ${DISCOVERY_PAIRS.length * 2} 条）`, `❤️ Like +2 · 💬 Comment +1 · ↗️ Share +1 · 🔖 Save +1.5<br>👉 Skip → next (${DISCOVERY_PAIRS.length * 2} topics)`)}</div>
+            </div>
+            <div class="algo-rule-card">
+                <div class="algo-rule-title">${txt('📐 计分公式', '📐 Score formula')}</div>
+                <div class="algo-rule-desc">${txt('兴趣分 = 探测得分 + 点赞×2 − 划走×0.5', 'Interest = scan score + likes×2 − skips×0.5')}</div>
+            </div>`;
+    } else {
+        rulesHtml = `
+            <div class="algo-rule-card active">
+                <div class="algo-rule-title">📱 ${txt('模式：', 'Mode: ')}${isEn() ? roundRule.labelEn : roundRule.label}${txt(`（第 ${state.round} 轮）`, ` (Round ${state.round})`)}</div>
+                <div class="algo-rule-desc">${isEn() ? roundRule.ruleEn : roundRule.rule}</div>
+            </div>
+            <div class="algo-rule-card">
+                <div class="algo-rule-title">${txt('🎯 当前锁定偏好', '🎯 Locked preference')}</div>
+                <div class="algo-rule-desc">${prefMeta.emoji} <strong style="color:${prefMeta.color}">${catName(preferred)}</strong> — ${txt('分数最高者优先推送', 'Highest score gets priority')}</div>
+            </div>
+            <div class="algo-rule-card">
+                <div class="algo-rule-title">${txt('👆 互动权重', '👆 Interaction weights')}</div>
+                <div class="algo-rule-desc">${txt('❤️ 点赞 <strong>+2</strong> · 💬 评论 <strong>+1</strong> · ↗️ 分享 <strong>+1</strong> · 🔖 收藏 <strong>+1.5</strong><br>👉 划走 → 该类型 <strong>−0.5</strong>', '❤️ Like <strong>+2</strong> · 💬 Comment <strong>+1</strong> · ↗️ Share <strong>+1</strong> · 🔖 Save <strong>+1.5</strong><br>👉 Skip → type <strong>−0.5</strong>')}</div>
+            </div>`;
+    }
+    document.getElementById('algoRules').innerHTML = rulesHtml;
+
+    // 下轮配比
+    const nextRound = Math.min(state.round + (phase === 'feed' && state.postIndex >= state.totalPosts ? 1 : 0), 3);
+    const nextRule = ROUND_RULES[nextRound] || ROUND_RULES[3];
+    const prefPct = phase === 'discover' ? 0 : (state.round >= 3 ? 100 : nextRule.prefPct);
+    const otherPct = 100 - prefPct;
+
+    document.getElementById('algoMix').innerHTML = `
+        <div class="algo-mix-bar">
+            <div class="algo-mix-segment" style="width:${prefPct}%; background:${prefMeta.color}">${prefPct > 15 ? prefMeta.emoji + ' ' + prefPct + '%' : ''}</div>
+            <div class="algo-mix-segment" style="width:${otherPct}%; background:#ffffff18">${otherPct > 15 ? txt('其他 ', 'Other ') + otherPct + '%' : ''}</div>
+        </div>
+        <div class="algo-mix-legend">
+            <span><span class="algo-mix-dot" style="background:${prefMeta.color}"></span>${catName(preferred)} ${prefPct}%</span>
+            <span><span class="algo-mix-dot" style="background:#ffffff30"></span>${txt('其他类型 ', 'Other types ')}${otherPct}%</span>
+        </div>`;
+
+    const top3 = weights.slice(0, 3);
+    document.getElementById('algoNext').innerHTML = `
+        <div class="algo-next-top">
+            ${txt('最可能推：', 'Likely next: ')}<strong>${prefMeta.emoji} ${catName(top3[0].cat)}</strong>
+            <span style="color:${CATEGORY_META[top3[0].cat].color}">${top3[0].pct}%</span>
+        </div>
+        ${top3.map(w => {
+            const m = CATEGORY_META[w.cat];
+            return `<div class="algo-score-row"><div class="algo-score-label">${m.emoji} ${catName(w.cat)}</div><div class="algo-score-track"><div class="algo-score-fill" style="width:${w.pct}%;background:${m.color}"></div></div><div class="algo-score-num">${w.pct}%</div></div>`;
+        }).join('')}`;
+
+    document.getElementById('algoStatus').textContent = phase === 'discover'
+        ? txt('● 探测中', '● Scanning') : txt(`● 第 ${state.round} 轮`, `● Round ${state.round}`);
+}
+
+function showLoading(text, duration) {
+    return new Promise(resolve => {
+        const el = document.getElementById('loading');
+        document.getElementById('loadingText').textContent = text;
+        el.classList.add('show');
+        setTimeout(() => {
+            el.classList.remove('show');
+            resolve();
+        }, duration);
+    });
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function randomTime() {
+    const times = isEn()
+        ? ['2 min ago', '5 min ago', '12 min ago', '28 min ago', '1 hr ago', '3 hrs ago', 'Yesterday']
+        : ['2分钟前', '5分钟前', '12分钟前', '28分钟前', '1小时前', '3小时前', '昨天'];
+    return times[Math.floor(Math.random() * times.length)];
+}
+
+function getPreferredCategory() {
+    const fromLikes = ALL_CATS.reduce((best, c) =>
+        state.likes[c] > state.likes[best] ? c : best, ALL_CATS[0]);
+    if (state.likes[fromLikes] > 0) return fromLikes;
+    return state.primaryCategory || ALL_CATS[0];
+}
+
+function getTopCategories(n) {
+    return ALL_CATS
+        .map(c => ({ cat: c, score: categoryInterestScore(c) }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, n)
+        .map(x => x.cat);
+}
+
+function getEngagedCount(c) {
+    return state.likes[c] + state.comments[c] + state.shares[c] + state.saves[c];
+}
+
+function totalEngagements() {
+    return ALL_CATS.reduce((s, c) => s + getEngagedCount(c), 0);
+}
+
+function engagedTypeCount() {
+    return ALL_CATS.filter(c => getEngagedCount(c) > 0).length;
+}
+
+// ===========================
+// 🔍 偏好探测
+// ===========================
+function startDiscover() {
+    initCategoryStats();
+    state.discoverStep = 0;
+    state.phase = 'discover';
+    state.algoLog = [];
+    state.totalClicks = 0;
+    buildDiscoverPosts();
+    logAlgoEvent(txt('用户开始体验 → 启动偏好探测（刷帖模式）', 'User started → preference scan (scroll mode)'), 'system');
+    goTo('screen-discover');
+    showDiscoverPost();
+    updateAlgoPanel();
+}
+
+function buildDiscoverPosts() {
+    const posts = [];
+    getDiscoveryPairs().forEach(pair => {
+        posts.push({ category: pair.left.cat, caption: pair.left.preview });
+        posts.push({ category: pair.right.cat, caption: pair.right.preview });
+    });
+    state.discoverPosts = posts;
+}
+
+function showDiscoverPost() {
+    if (state.discoverStep >= state.discoverPosts.length) {
+        finishDiscover();
+        return;
+    }
+
+    const item = state.discoverPosts[state.discoverStep];
+    const meta = CATEGORY_META[item.category];
+    const container = document.getElementById('discoverPostContainer');
+    const grad = `linear-gradient(160deg, ${meta.color}55 0%, ${meta.color}22 40%, #0a0a12 100%)`;
+    const total = state.discoverPosts.length;
+    const pct = total > 0 ? Math.round(state.discoverStep / total * 100) : 0;
+    const fill = document.getElementById('discoverProgressFill');
+    if (fill) fill.style.width = pct + '%';
+
+    container.innerHTML = `
+        <div class="social-post-full">
+            <div class="social-media-bg" style="background:${grad}">
+                <div class="media-emoji">${meta.emoji}</div>
+                <div class="social-side-actions">
+                    ${buildSideActionsHtml('reactDiscover', { like: txt('喜欢', 'Like'), comment: txt('评论', 'Comment'), share: txt('分享', 'Share'), save: txt('收藏', 'Save') })}
+                </div>
+                <div class="social-bottom-meta">
+                    <div class="social-author">
+                        <div class="social-avatar" style="background:${meta.color}33">${meta.emoji}</div>
+                        <span class="social-username">@${catName(item.category)}</span>
+                        <button class="follow-btn">${txt('+ 关注', '+ Follow')}</button>
+                    </div>
+                    <div class="social-tag">${meta.emoji} ${catName(item.category)} · ${txt(`主题 ${state.discoverStep + 1}/${total}`, `Topic ${state.discoverStep + 1}/${total}`)}</div>
+                    <div class="social-caption">${item.caption}</div>
+                    <div class="social-music">
+                        <span class="social-music-icon">🎵</span>
+                        <span>${txt('互动会记分 · 👉 划走看下一个', 'Actions score · 👉 Skip for next')}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    updateAlgoPanel();
+}
+
+function reactDiscover(action) {
+    const item = state.discoverPosts[state.discoverStep];
+    const meta = CATEGORY_META[item.category];
+    const cat = item.category;
+    state.seen[cat]++;
+
+    if (action === 'skip') {
+        state.skips[cat]++;
+        logAlgoEvent(txt(
+            `👉 略过 ${meta.emoji}${catName(cat)} → 下一个主题`,
+            `👉 Skipped ${meta.emoji}${catName(cat)} → next topic`
+        ), 'skip');
+    } else {
+        const pts = DISCOVER_ENGAGE[action] || 0;
+        state.preferences[cat] += pts;
+        const em = ENGAGE_META[action];
+        logAlgoEvent(txt(
+            `${em.logCn} ${meta.emoji}${catName(cat)} → +${pts} 分`,
+            `${em.logEn} ${meta.emoji}${catName(cat)} → +${pts} pts`
+        ), em.type);
+    }
+
+    state.discoverStep++;
+    updateAlgoPanel();
+
+    if (state.discoverStep >= state.discoverPosts.length) {
+        finishDiscover();
+    } else {
+        showDiscoverPost();
+    }
+}
+
+async function finishDiscover() {
+    let topPref = ALL_CATS.reduce((best, c) =>
+        state.preferences[c] > state.preferences[best] ? c : best, ALL_CATS[0]);
+    if (state.preferences[topPref] === 0) {
+        topPref = ALL_CATS.reduce((best, c) =>
+            (state.likes[c] > state.likes[best] ? c : best), ALL_CATS[0]);
+    }
+    if (state.preferences[topPref] === 0 && state.likes[topPref] === 0) {
+        topPref = shuffle(ALL_CATS)[0];
+    }
+    state.primaryCategory = topPref;
+
+    const meta = CATEGORY_META[state.primaryCategory];
+    logAlgoEvent(txt(
+        `探测完成！锁定主偏好：<strong>${meta.emoji}${catName(state.primaryCategory)}</strong>（${state.preferences[state.primaryCategory]} 分）`,
+        `Scan done! Locked: <strong>${meta.emoji}${catName(state.primaryCategory)}</strong> (${state.preferences[state.primaryCategory]} pts)`
+    ), 'system');
+    updateAlgoPanel();
+    await showLoading(txt(`算法识别中……你的偏好是 ${meta.emoji} ${catName(state.primaryCategory)}`, `Analyzing… Your preference: ${meta.emoji} ${catName(state.primaryCategory)}`), 1800);
+    startFeed();
+}
+
+// ===========================
+// 📱 信息流核心逻辑
+// ===========================
+async function startFeed() {
+    state.phase = 'feed';
+    state.round = 1;
+    state.postIndex = 0;
+    state.allRoundPosts = [];
+    ALL_CATS.forEach(c => {
+        state.likes[c] = 0;
+        state.comments[c] = 0;
+        state.shares[c] = 0;
+        state.saves[c] = 0;
+        state.skips[c] = 0;
+        state.seen[c] = 0;
+    });
+
+    const meta = CATEGORY_META[state.primaryCategory];
+    logAlgoEvent(txt(`进入推荐流 → 首轮约 62% 推送 ${catName(state.primaryCategory)}`, `Entering feed → ~62% ${catName(state.primaryCategory)} first`), 'system');
+    updateAlgoPanel();
+    await showLoading(txt('正在为你加载推荐内容...', 'Loading your feed...'), 1200);
+    generateRoundPosts();
+    goTo('screen-feed');
+    showCurrentPost();
+}
+
+function generateRoundPosts() {
+    const preferred = getPreferredCategory();
+    const others = ALL_CATS.filter(c => c !== preferred);
+    const usedSources = new Set(state.allRoundPosts.map(p => p.source));
+
+    function pickFrom(cat, count) {
+        const pool = POSTS[cat].filter(p => !usedSources.has(p.source));
+        const source = pool.length >= count ? pool : POSTS[cat];
+        return shuffle(source).slice(0, count).map(p => {
+            usedSources.add(p.source);
+            return { ...p, category: cat };
+        });
+    }
+
+    let posts = [];
+
+    if (state.round === 1) {
+        // 第1轮：已根据探测结果偏向偏好（5:3）
+        posts = [
+            ...pickFrom(preferred, 5),
+            ...shuffle(others).slice(0, 3).flatMap(c => pickFrom(c, 1)),
+        ];
+    } else if (state.round === 2) {
+        // 第2轮：7:1
+        posts = [
+            ...pickFrom(preferred, 7),
+            ...pickFrom(shuffle(others)[0], 1),
+        ];
+    } else {
+        // 第3轮：几乎全是偏好内容
+        posts = pickFrom(preferred, 8);
+    }
+
+    state.currentPosts = shuffle(posts);
+    state.postIndex = 0;
+    state.totalPosts = state.currentPosts.length;
+    updateProgress();
+    updateRoundLabel();
+    logAlgoEvent(txt(
+        `第 ${state.round} 轮内容已生成：${posts.filter(p=>p.category===preferred).length}/${posts.length} 条为 ${catName(preferred)}`,
+        `Round ${state.round} generated: ${posts.filter(p=>p.category===preferred).length}/${posts.length} are ${catName(preferred)}`
+    ), 'system');
+    updateAlgoPanel();
+}
+
+function updateRoundLabel() {
+    const rule = ROUND_RULES[state.round];
+    document.getElementById('feedRound').textContent = isEn()
+        ? `Round ${state.round} · ${rule.labelEn}`
+        : `第 ${state.round} 轮 · ${rule.label}`;
+}
+
+function updateProgress() {
+    const pct = state.totalPosts > 0 ? Math.round(state.postIndex / state.totalPosts * 100) : 0;
+    const fill = document.getElementById('feedProgressFill');
+    if (fill) fill.style.width = pct + '%';
+}
+
+function showCurrentPost() {
+    if (state.postIndex >= state.currentPosts.length) {
+        endRound();
+        return;
+    }
+
+    const post = state.currentPosts[state.postIndex];
+    const meta = CATEGORY_META[post.category];
+    const container = document.getElementById('postContainer');
+    const grad = `linear-gradient(160deg, ${meta.color}55 0%, ${meta.color}22 40%, #0a0a12 100%)`;
+
+    container.innerHTML = `
+        <div class="social-post-full">
+            <div class="social-media-bg" style="background:${grad}">
+                <div class="media-emoji">${meta.emoji}</div>
+                <div class="social-side-actions">
+                    ${buildSideActionsHtml('reactPost', { like: post.likes, comment: post.comments, share: txt('分享', 'Share'), save: txt('收藏', 'Save') })}
+                </div>
+                <div class="social-bottom-meta">
+                    <div class="social-author">
+                        <div class="social-avatar" style="background:${meta.color}33">${post.avatar}</div>
+                        <span class="social-username">@${pSource(post)}</span>
+                        <button class="follow-btn">${txt('+ 关注', '+ Follow')}</button>
+                    </div>
+                    <div class="social-tag">${meta.emoji} ${catName(post.category)}</div>
+                    <div class="social-caption">${pText(post, state.postIndex)}</div>
+                    <div class="social-music">
+                        <span class="social-music-icon">🎵</span>
+                        <span>${txt(`原声 · ${catName(post.category)}热门推荐`, `Original · ${catName(post.category)} trending`)}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    updateProgress();
+    updateAlgoPanel();
+}
+
+function reactPost(action) {
+    const post = state.currentPosts[state.postIndex];
+    const meta = CATEGORY_META[post.category];
+    const cat = post.category;
+    state.seen[cat]++;
+
+    if (action === 'skip') {
+        state.skips[cat]++;
+        logAlgoEvent(txt(
+            `👉 划走 ${meta.emoji}${catName(cat)} → 权重 −0.5 → 此类减少`,
+            `👉 Skipped ${meta.emoji}${catName(cat)} → weight −0.5 → less of this`
+        ), 'skip');
+    } else {
+        if (action === 'like') state.likes[cat]++;
+        else if (action === 'comment') state.comments[cat]++;
+        else if (action === 'share') state.shares[cat]++;
+        else if (action === 'save') state.saves[cat]++;
+        const em = ENGAGE_META[action];
+        logAlgoEvent(txt(
+            `${em.logCn} ${meta.emoji}${catName(cat)} ${isEn() ? em.feedEn : em.feedCn} → 下轮多推此类`,
+            `${em.logEn} ${meta.emoji}${catName(cat)} ${em.feedEn} → more next round`
+        ), em.type);
+    }
+
+    state.allRoundPosts.push(post);
+    state.postIndex++;
+    updateAlgoPanel();
+    showCurrentPost();
+}
+
+async function endRound() {
+    if (state.round < 3) {
+        const container = document.getElementById('postContainer');
+        const meta = CATEGORY_META[getPreferredCategory()];
+        const messages = {
+            1: { title: txt('📊 第一轮结束', '📊 Round 1 complete'), desc: txt(`算法发现你最爱 ${meta.emoji} ${catName(getPreferredCategory())}，下一轮多推一些...`, `Algo found you love ${meta.emoji} ${catName(getPreferredCategory())}—more next round…`) },
+            2: { title: txt('🔍 第二轮结束', '🔍 Round 2 complete'), desc: txt('你的首页正在被"优化"，几乎只剩一种内容了', 'Your feed is being "optimized"—almost one type only') },
+        };
+        const msg = messages[state.round];
+
+        container.innerHTML = `
+            <div class="round-transition-in-phone">
+                <h2 style="font-size:1.4em;margin-bottom:10px">${msg.title}</h2>
+                <p style="color:#8888aa;margin-bottom:20px;font-size:0.9em">${msg.desc}</p>
+                <p style="color:#6366f1;font-size:0.82em;margin-bottom:16px">${txt('👀 看右侧面板：配比正在变化', '👀 See right panel: mix is shifting')}</p>
+                <button class="continue-btn" onclick="nextRound()">${txt('继续刷 →', 'Keep scrolling →')}</button>
+            </div>
+        `;
+        updateAlgoPanel();
+    } else {
+        await showLoading(txt('正在生成你的信息茧房报告...', 'Building your filter bubble report...'), 1500);
+        initFinalAwareness();
+        goTo('screen-final');
+    }
+}
+
+async function nextRound() {
+    state.round++;
+    const rule = ROUND_RULES[state.round];
+    logAlgoEvent(txt(`进入第 ${state.round} 轮 → ${isEn() ? rule.ruleEn : rule.rule}`, `Round ${state.round} → ${isEn() ? rule.ruleEn : rule.rule}`), 'system');
+    updateAlgoPanel();
+    const loadingTexts = {
+        2: txt('🤖 算法正在根据你的偏好重组内容...', '🤖 Reorganizing feed by your preferences...'),
+        3: txt('🤖 茧房模式启动，精准推送中...', '🤖 Bubble mode—precision feeding...')
+    };
+    await showLoading(loadingTexts[state.round], 1500);
+    generateRoundPosts();
+    showCurrentPost();
+    updateRoundLabel();
+}
+
+// ===========================
+// 🧐 刷完感受
+// ===========================
+function initFinalAwareness() {
+    const container = document.getElementById('finalOptions');
+    container.innerHTML = '';
+    AWARENESS_OPTIONS.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'stance-btn';
+        btn.textContent = isEn() ? opt.labelEn : opt.label;
+        btn.onclick = async () => {
+            state.finalAwareness = opt.value;
+            await showLoading(txt('正在生成你的信息茧房报告...', 'Building your filter bubble report...'), 1800);
+            showResult();
+        };
+        container.appendChild(btn);
+    });
+}
+
+// ===========================
+// 📊 结果揭示
+// ===========================
+function showResult() {
+    const preferred = getPreferredCategory();
+    const prefMeta = CATEGORY_META[preferred];
+    const totalSeen = ALL_CATS.reduce((s, c) => s + state.seen[c], 0);
+    const prefPct = Math.round(state.seen[preferred] / totalSeen * 100);
+
+    const totalInteract = totalEngagements();
+    const engagedTypes = engagedTypeCount();
+
+    const missedCats = ALL_CATS.filter(c => c !== preferred && state.seen[c] <= 1);
+    const missedNames = missedCats.map(c => CATEGORY_META[c].emoji + ' ' + catName(c)).join(isEn() ? ', ' : '、');
+
+    const container = document.getElementById('resultContainer');
+    container.innerHTML = `
+        <div class="result-title">${txt('💥 真相揭示', '💥 Truth Revealed')}</div>
+
+        <div class="reveal-box">
+            <h3>${txt('🎯 算法给你打造的「专属世界」', '🎯 Your algorithm-built bubble')}</h3>
+            <p style="font-size:1.1em; margin-bottom:12px;">
+                ${txt('你的偏好：', 'Your preference: ')}<strong style="color:${prefMeta.color}">${prefMeta.emoji} ${catName(preferred)}</strong>
+            </p>
+            <div class="bar-chart" id="categoryBars"></div>
+            <p style="font-size:0.85em; color:#888; margin-top:12px;">
+                ${txt(`⚖️ 网上其实有 <strong style="color:#fff">${ALL_CATS.length} 种</strong> 完全不同的有趣内容<br>🫧 但算法让你 <strong style="color:#ffd93d">${prefPct}%</strong> 的时间都在看 ${catName(preferred)}`,
+                `⚖️ The internet has <strong style="color:#fff">${ALL_CATS.length}</strong> fun content types<br>🫧 But the algo had you watch ${catName(preferred)} <strong style="color:#ffd93d">${prefPct}%</strong> of the time`)}
+            </p>
+        </div>
+
+        <div class="reveal-box">
+            <h3>${txt('❤️ 你的互动数据', '❤️ Your interactions')}</h3>
+            <p style="font-size:0.95em; line-height:1.8;">
+                ${txt(`你一共操作了 <strong style="color:#6366f1">${state.totalClicks}</strong> 次（每次点击都更新了右侧算法）<br>互动 <strong style="color:#ff6b6b">${totalInteract}</strong> 次，涉及 <strong style="color:#ffd93d">${engagedTypes}</strong> 种内容类型`,
+                `You interacted <strong style="color:#6366f1">${state.totalClicks}</strong> times (each tap updated the algo)<br><strong style="color:#ff6b6b">${totalInteract}</strong> engagements across <strong style="color:#ffd93d">${engagedTypes}</strong> types`)}
+                ${engagedTypes <= 2 ? txt('——几乎只给一种内容互动了', '—almost only one type') : txt('——还算有一定多样性', '—decent variety')}
+            </p>
+        </div>
+
+        ${missedCats.length > 0 ? `
+        <div class="reveal-box" style="border-left:3px solid #6366f1;">
+            <h3>${txt('👀 你几乎没刷到的内容', '👀 Content you barely saw')}</h3>
+            <p style="font-size:0.95em; line-height:1.8; color:#ccc;">
+                ${missedNames || txt('无', 'None')}<br>
+                <span style="color:#888; font-size:0.85em">${txt('这些内容不是不存在，只是算法觉得「你不会感兴趣」', 'Not missing—algorithm thinks you wouldn\'t care')}</span>
+            </p>
+        </div>` : ''}
+
+        <div class="reveal-box">
+            <h3>${txt('🤖 算法对你做了什么？', '🤖 What did the algorithm do?')}</h3>
+            <p style="font-size:0.9em; line-height:1.8; color:#ccc;">
+                <strong>${txt('偏好探测：', 'Preference scan: ')}</strong>${txt(`${DISCOVERY_PAIRS.length * 2} 个主题刷一遍，点赞的算法会记住`, `Browsed ${DISCOVERY_PAIRS.length * 2} topics—likes train the algo`)}<br><br>
+                <strong>${txt('第1轮：', 'Round 1: ')}</strong>${txt('推荐内容约', 'Feed ~')} <span style="color:#ffd93d">60%</span> ${txt('是你的偏好类型', 'your preferred type')}<br><br>
+                <strong>${txt('第2轮：', 'Round 2: ')}</strong>${txt('比例升到约', 'Rises to ~')} <span style="color:#ff8a00">90%</span>${txt('，其他类型几乎消失', ', others nearly gone')}<br><br>
+                <strong>${txt('第3轮：', 'Round 3: ')}</strong>${txt('几乎', 'Nearly')} <span style="color:#ff6b6b">100%</span> ${txt('都是', 'is')} ${catName(preferred)}${txt('，茧房形成', '—bubble locked')}<br><br>
+                ${txt('💡 你以为在「自由刷」，其实看到的内容早被算法筛过了。', '💡 You thought you were free scrolling—but the algo filtered everything.')}
+            </p>
+        </div>
+
+        <div class="reveal-box truth-section">
+            <h4>${txt('📖 破茧提示', '📖 Break the bubble')}</h4>
+            <p>${txt('主动搜索你平时不看的类型、关注不同圈子的博主、偶尔给「不感兴趣」的内容点个赞——打破算法画像，世界会大很多。',
+                'Search types you never watch, follow different creators, occasionally like "not interested" content—break your profile, widen your world.')}</p>
+        </div>
+
+        <button class="continue-btn" style="margin-top:20px; padding:14px 36px;" onclick="showScore()">${txt('查看你的信息素养得分 →', 'See your literacy score →')}</button>
+    `;
+
+    goTo('screen-result');
+
+    const barsEl = document.getElementById('categoryBars');
+    ALL_CATS.forEach(c => {
+        const pct = Math.round(state.seen[c] / totalSeen * 100);
+        const meta = CATEGORY_META[c];
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = `
+            <div class="bar-label">${meta.emoji}</div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width:0%; background:${meta.color}" data-pct="${pct}">${pct > 8 ? pct + '%' : ''}</div>
+            </div>
+        `;
+        barsEl.appendChild(row);
+    });
+
+    setTimeout(() => {
+        barsEl.querySelectorAll('.bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.pct + '%';
+        });
+    }, 300);
+}
+
+// ===========================
+// 🏆 分数计算
+// ===========================
+function calculateScore() {
+    let score = 50;
+    const preferred = getPreferredCategory();
+    const engagedTypes = engagedTypeCount();
+
+    // 互动多样性（点赞/评论/分享/收藏任一即算）
+    score += Math.min(engagedTypes * 5, 25);
+
+    // 划走偏好内容
+    score += Math.min(state.skips[preferred] * 5, 15);
+
+    // 刷完感受
+    if (state.finalAwareness === 3) score += 15;
+    else if (state.finalAwareness === 2) score += 8;
+    else score -= 5;
+
+    // 看到的内容多样性（非偏好类型占比）
+    const totalSeen = ALL_CATS.reduce((s, c) => s + state.seen[c], 0);
+    const nonPrefSeen = totalSeen - state.seen[preferred];
+    score += Math.round(nonPrefSeen / totalSeen * 20);
+
+    score = Math.max(10, Math.min(100, score));
+    return score;
+}
+
+function showScore() {
+    const score = calculateScore();
+    const preferred = getPreferredCategory();
+    const prefMeta = CATEGORY_META[preferred];
+    const totalSeen = ALL_CATS.reduce((s, c) => s + state.seen[c], 0);
+    const prefPct = Math.round(state.seen[preferred] / totalSeen * 100);
+
+    let rank, rankColor, rankDesc;
+    if (score >= 85) {
+        rank = txt('🛡️ 信息免疫者', '🛡️ Bubble Immune');
+        rankColor = '#6bcb77';
+        rankDesc = txt('你有很强的信息辨别力！即使算法不断推送同类内容，你仍保持清醒和好奇心。', 'Strong media literacy! You stayed curious even as the algo pushed one type.');
+    } else if (score >= 70) {
+        rank = txt('🔍 理性观察者', '🔍 Rational Observer');
+        rankColor = '#4d96ff';
+        rankDesc = txt('你有一定的信息辨别能力，但算法的持续推送还是影响了你的浏览习惯。', 'Some discernment—but the feed still shaped your habits.');
+    } else if (score >= 50) {
+        rank = txt('🫧 茧房边缘人', '🫧 Bubble Edge');
+        rankColor = '#ffd93d';
+        rankDesc = txt('你的浏览习惯容易被算法塑造。你倾向于互动自己爱看的，其他类型的内容几乎被忽略了。', 'Easy to shape—you mostly engaged one type and ignored the rest.');
+    } else {
+        rank = txt('🕸️ 茧房深陷者', '🕸️ Deep in the Bubble');
+        rankColor = '#ff6b6b';
+        rankDesc = txt('算法成功把你"困"在了一个内容泡泡里！你的首页几乎只剩一种类型了。', 'The algo trapped you! Your feed is almost one type only.');
+    }
+
+    const container = document.getElementById('scoreContainer');
+    container.innerHTML = `
+        <div class="emoji-big">🎯</div>
+        <div class="section-title">${txt('你的信息素养报告', 'Your Media Literacy Report')}</div>
+
+        <div class="score-circle">
+            <div class="score-number">${score}</div>
+            <div class="score-label">/ 100</div>
+        </div>
+
+        <div class="score-rank" style="color:${rankColor}; border:1px solid ${rankColor}44; background:${rankColor}11;">
+            ${rank}
+        </div>
+        <p style="color:#aaa; max-width:400px; text-align:center; line-height:1.6; margin:12px auto; font-size:0.9em;">
+            ${rankDesc}
+        </p>
+
+        <div class="tips-box">
+            <h3>${txt('🛡️ 破茧四招', '🛡️ Four ways to break free')}</h3>
+            <div class="tip-item">
+                <div class="tip-num">1</div>
+                <div class="tip-text"><strong>${txt('主动搜不同圈子', 'Explore other circles')}</strong><br>${txt('今天看游戏，明天搜旅行、美食——故意打破算法画像', 'Games today, travel or food tomorrow—break your profile on purpose')}</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-num">2</div>
+                <div class="tip-text"><strong>${txt('检查信息来源', 'Check the source')}</strong><br>${txt('这条内容是谁发的？是事实还是观点？', 'Who posted this? Fact or opinion?')}</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-num">3</div>
+                <div class="tip-text"><strong>${txt('警惕"太懂我"', 'Beware "it gets me"')}</strong><br>${txt('当推荐越来越精准时，恰恰说明你的视野在变窄', 'When feeds feel perfect, your view is narrowing')}</div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-num">4</div>
+                <div class="tip-text"><strong>${txt('定期清理算法', 'Reset the algorithm')}</strong><br>${txt('偶尔给平时不看的内容点赞，告诉算法"我也感兴趣别的"', 'Like content you usually skip—tell the algo you want variety')}</div>
+            </div>
+        </div>
+
+        <div class="global-stats">
+            <h3 style="text-align:center; margin-bottom:12px;">${txt('📊 你的完整数据', '📊 Your full stats')}</h3>
+            <div class="stat-row">
+                <span>${txt('浏览帖子总数', 'Posts viewed')}</span>
+                <span class="stat-value">${totalSeen} ${txt('条', '')}</span>
+            </div>
+            <div class="stat-row">
+                <span>${txt('算法偏好类型', 'Algo preference')}</span>
+                <span class="stat-value" style="color:${prefMeta.color}">${prefMeta.emoji} ${catName(preferred)}</span>
+            </div>
+            <div class="stat-row">
+                <span>${txt('偏好内容占比', 'Preferred share')}</span>
+                <span class="stat-value" style="color:#ffd93d">${prefPct}%</span>
+            </div>
+            <div class="stat-row">
+                <span>${txt('互动总数', 'Total interactions')}</span>
+                <span class="stat-value">${totalEngagements()} ${txt('次', '')}</span>
+            </div>
+            <div class="stat-row">
+                <span>${txt('涉及内容类型', 'Types engaged')}</span>
+                <span class="stat-value">${engagedTypeCount()} / ${ALL_CATS.length} ${txt('种', 'types')}</span>
+            </div>
+        </div>
+
+        <div class="final-actions">
+            <button class="final-btn btn-replay" onclick="replay()">${txt('🔄 再玩一次', '🔄 Play again')}</button>
+            <button class="final-btn btn-share" onclick="shareResult()">${txt('📤 分享给同学', '📤 Share with class')}</button>
+        </div>
+
+        <p style="color:#444; margin-top:20px; font-size:0.75em; text-align:center;">
+            ${txt('「茧房迷宫」· 媒体素养教育互动游戏<br>记住：你刷到的 ≠ 全部的精彩', 'Bubble Maze · Media literacy game<br>Remember: what you see ≠ all the fun')}</p>
+    `;
+
+    goTo('screen-score');
+}
+
+function replay() {
+    state = {
+        preferences: {},
+        primaryCategory: null,
+        discoverStep: 0,
+    discoverPosts: [],
+        phase: 'idle',
+        round: 1,
+        postIndex: 0,
+        totalPosts: 0,
+        likes: {},
+    comments: {},
+    shares: {},
+    saves: {},
+        skips: {},
+        seen: {},
+        currentPosts: [],
+        allRoundPosts: [],
+        finalAwareness: 0,
+        algoLog: [],
+        totalClicks: 0,
+    };
+    document.body.classList.remove('algo-mode');
+    goTo('screen-start');
+}
+
+function shareResult() {
+    const score = calculateScore();
+    const prefMeta = CATEGORY_META[getPreferredCategory()];
+    const text = isEn()
+        ? `I scored ${score} on Bubble Maze! The algo trapped me in ${catName(getPreferredCategory())}. Are you trapped too?`
+        : `我在「茧房迷宫」得了${score}分！算法把我困在了${catName(getPreferredCategory())}里，你被算法困住了吗？`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: txt('茧房迷宫', 'Bubble Maze'),
+            text: text,
+            url: window.location.href
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(text + ' ' + window.location.href).then(() => {
+            alert(txt('✅ 已复制到剪贴板，快去发给同学吧！', '✅ Copied! Share with classmates!'));
+        }).catch(() => {
+            alert(txt('分享文案：\n\n', 'Share text:\n\n') + text);
+        });
+    }
+}
+</script>
+</body>
+</html>

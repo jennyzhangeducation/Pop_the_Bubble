@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>🫧 泡泡宇宙 · 信息素养活动站</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --pk:#FF5C8A;--pp:#9B5DE5;--bl:#00B4D8;--gn:#2ECC71;--yl:#FFD166;--rd:#FF6B6B;--or:#FF9F43;
+  --tx:#2D3436;--tx2:#5C6B7A;--card:#fff;--bg1:#E8F4FF;--bg2:#FFF0F5;--bg3:#FFF8E1
+}
+body{
+  font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:linear-gradient(160deg,var(--bg1) 0%,#F0E6FF 40%,var(--bg2) 70%,var(--bg3) 100%);
+  background-attachment:fixed;color:var(--tx);min-height:100vh;overflow-x:hidden
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle 80px at 8% 15%,rgba(255,92,138,.18),transparent),
+    radial-gradient(circle 60px at 92% 10%,rgba(155,93,229,.15),transparent),
+    radial-gradient(circle 70px at 85% 75%,rgba(0,180,216,.15),transparent),
+    radial-gradient(circle 50px at 12% 80%,rgba(255,209,102,.2),transparent),
+    radial-gradient(circle 40px at 50% 50%,rgba(46,204,113,.08),transparent)
+}
+
+/* Language toggle */
+.lang-bar{
+  position:sticky;top:0;z-index:100;display:flex;justify-content:center;gap:8px;
+  padding:12px 16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+  border-bottom:3px solid transparent;border-image:linear-gradient(90deg,var(--pk),var(--pp),var(--bl),var(--gn)) 1;
+  box-shadow:0 4px 20px rgba(155,93,229,.12)
+}
+.lang-btn{
+  padding:8px 20px;border-radius:24px;font-size:.9em;font-weight:800;cursor:pointer;
+  border:2px solid #E8E0F0;background:#fff;color:var(--tx2);transition:all .25s
+}
+.lang-btn:hover{border-color:var(--pp);color:var(--pp);transform:scale(1.05)}
+.lang-btn.on{
+  background:linear-gradient(135deg,var(--pk),var(--pp),var(--bl));
+  border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(255,92,138,.35)
+}
+body.lang-en .bi-cn{display:none}
+body.lang-cn .bi-en{display:none}
+
+.page-view{display:none;position:relative;z-index:1}
+.page-view.on{display:block}
+#view-game.on{display:flex;flex-direction:column;min-height:calc(100vh - 52px)}
+#view-game iframe{flex:1;width:100%;min-height:calc(100vh - 110px);border:none;background:#0a0a1a}
+
+.activity-header{
+  display:flex;align-items:center;gap:12px;padding:10px 16px;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+  border-bottom:2px solid #E8E0F0;position:sticky;top:52px;z-index:50;
+  max-width:720px;margin:0 auto;width:100%
+}
+.hub-back{
+  padding:8px 14px;border-radius:20px;border:2px solid #E8E0F0;background:#fff;
+  font-weight:800;cursor:pointer;font-size:.82em;color:var(--tx2);transition:all .2s;flex-shrink:0
+}
+.hub-back:hover{border-color:var(--pp);color:var(--pp)}
+.act-hdr-title{font-weight:900;font-size:.95em;color:var(--tx);line-height:1.3}
+
+.activity-list{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.activity-card{
+  display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:20px;
+  cursor:pointer;transition:all .3s;border:3px solid transparent;
+  box-shadow:0 4px 16px rgba(0,0,0,.06);background:#fff;text-align:left
+}
+.activity-card:nth-child(1){border-color:rgba(255,92,138,.45);background:linear-gradient(135deg,#FFF0F8,#fff)}
+.activity-card:nth-child(2){border-color:rgba(0,180,216,.45);background:linear-gradient(135deg,#F0FAFF,#fff)}
+.activity-card:nth-child(3){border-color:rgba(70,23,143,.35);background:linear-gradient(135deg,#F8F0FF,#fff)}
+.activity-card:nth-child(4){border-color:rgba(46,204,113,.45);background:linear-gradient(135deg,#F0FFF5,#fff)}
+.activity-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(155,93,229,.18)}
+.activity-card:active{transform:scale(.98)}
+.act-badge{
+  width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:1.6em;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.08)
+}
+.activity-card:nth-child(1) .act-badge{background:linear-gradient(135deg,#FFE0EC,#F8D0FF)}
+.activity-card:nth-child(2) .act-badge{background:linear-gradient(135deg,#D0F0FF,#C8FFE8)}
+.activity-card:nth-child(3) .act-badge{background:linear-gradient(135deg,#E8D8FF,#F0D0FF)}
+.activity-card:nth-child(4) .act-badge{background:linear-gradient(135deg,#D8FFE8,#C8F0FF)}
+.act-info{flex:1;min-width:0}
+.act-label{font-size:.68em;font-weight:800;color:var(--pp);margin-bottom:2px}
+.act-name{font-weight:900;font-size:1.05em;color:var(--tx);margin-bottom:4px;line-height:1.3}
+.act-desc{font-size:.8em;color:var(--tx2);line-height:1.5;font-weight:600}
+.act-go{font-weight:800;color:var(--pp);font-size:.82em;flex-shrink:0}
+.hub-route{
+  text-align:center;padding:18px;border-radius:18px;margin-bottom:8px;
+  background:rgba(255,255,255,.65);border:2px dashed rgba(155,93,229,.28);
+  font-size:.85em;color:var(--tx2);font-weight:600;line-height:1.75
+}
+
+/* Activity 4 · Creative studio */
+.keyword-box{
+  background:#fff;border-radius:18px;padding:18px;margin-bottom:20px;
+  border:3px solid rgba(46,204,113,.35);box-shadow:0 6px 24px rgba(46,204,113,.1)
+}
+.keyword-box h3{font-size:.95em;font-weight:900;margin-bottom:10px;color:var(--tx)}
+.keyword-tags{display:flex;flex-wrap:wrap;gap:8px}
+.kw{
+  padding:6px 12px;border-radius:20px;font-size:.78em;font-weight:700;
+  background:linear-gradient(135deg,rgba(255,92,138,.12),rgba(155,93,229,.1));
+  border:2px solid rgba(155,93,229,.2);color:var(--tx2)
+}
+.create-grid{display:flex;flex-direction:column;gap:14px}
+.create-opt{
+  background:#fff;border-radius:20px;border:3px solid transparent;
+  box-shadow:0 4px 16px rgba(0,0,0,.06);overflow:hidden;transition:all .3s
+}
+.create-opt:nth-child(1){border-color:rgba(255,92,138,.4)}
+.create-opt:nth-child(2){border-color:rgba(155,93,229,.4)}
+.create-opt:nth-child(3){border-color:rgba(0,180,216,.4)}
+.create-opt:nth-child(4){border-color:rgba(255,209,102,.5)}
+.create-opt:nth-child(5){border-color:rgba(46,204,113,.4)}
+.create-opt:nth-child(6){border-color:rgba(255,159,67,.45)}
+.create-opt.open{box-shadow:0 10px 28px rgba(155,93,229,.15)}
+.create-hd{
+  display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(255,255,255,.9),#fff)
+}
+.create-hd:hover{background:linear-gradient(135deg,rgba(155,93,229,.06),#fff)}
+.create-icon{
+  width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5em;flex-shrink:0;background:linear-gradient(135deg,#F5F0FF,#E8F8FF)
+}
+.create-hd-info{flex:1;min-width:0}
+.create-hd-name{font-weight:900;font-size:.98em;color:var(--tx);line-height:1.3}
+.create-hd-tool{font-size:.72em;color:var(--pp);font-weight:700;margin-top:2px}
+.create-toggle{font-size:.75em;color:var(--tx2);font-weight:800;flex-shrink:0}
+.create-body{
+  max-height:0;overflow:hidden;transition:max-height .4s ease;
+  padding:0 18px;background:rgba(250,251,255,.8)
+}
+.create-opt.open .create-body{max-height:900px;padding:0 18px 18px}
+.create-steps{font-size:.84em;line-height:1.7;color:var(--tx2);margin:12px 0}
+.create-steps ol{margin:0;padding-left:20px}
+.create-steps li{margin-bottom:6px}
+.create-prompt{
+  background:linear-gradient(135deg,rgba(0,180,216,.08),rgba(155,93,229,.06));
+  border:2px dashed rgba(0,180,216,.25);border-radius:12px;padding:12px 14px;
+  font-size:.8em;line-height:1.6;color:var(--tx2);margin-bottom:12px
+}
+.create-prompt b{color:var(--tx);display:block;margin-bottom:4px;font-size:.85em}
+.tool-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:24px;
+  font-size:.88em;font-weight:800;color:#fff;text-decoration:none;
+  background:linear-gradient(135deg,var(--pk),var(--pp));
+  box-shadow:0 4px 14px rgba(155,93,229,.3);transition:all .2s
+}
+.tool-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(155,93,229,.4)}
+.tool-btn.sec{
+  background:#fff;color:var(--pp);border:2px solid var(--pp);box-shadow:none;margin-left:8px
+}
+.create-note{
+  margin-top:16px;padding:14px;border-radius:14px;font-size:.8em;line-height:1.65;
+  color:var(--tx2);font-weight:600;background:rgba(255,209,102,.15);border:2px solid rgba(255,209,102,.35)
+}
+.submit-box{
+  margin-top:20px;background:#fff;border-radius:18px;padding:20px;
+  border:3px solid rgba(0,180,216,.4);box-shadow:0 8px 28px rgba(0,180,216,.12)
+}
+.submit-box h3{font-size:1em;font-weight:900;margin-bottom:10px;color:var(--tx)}
+.submit-box p{font-size:.84em;line-height:1.65;color:var(--tx2);margin-bottom:12px;font-weight:600}
+.submit-steps{font-size:.84em;line-height:1.7;color:var(--tx2);margin:0 0 14px;padding-left:20px}
+.submit-steps li{margin-bottom:8px}
+.submit-example{
+  background:linear-gradient(135deg,rgba(155,93,229,.08),rgba(0,180,216,.06));
+  border:2px dashed rgba(155,93,229,.25);border-radius:12px;padding:12px 14px;
+  font-size:.8em;line-height:1.6;color:var(--tx2);margin-bottom:14px;font-weight:600
+}
+.submit-example code{
+  display:block;margin-top:6px;padding:8px 10px;border-radius:8px;
+  background:#fff;font-family:ui-monospace,monospace;font-size:.85em;color:var(--pp);
+  border:1px solid rgba(155,93,229,.2);word-break:break-all
+}
+.submit-btn-wrap{text-align:center;margin-top:4px}
+
+.know{padding:0 20px 40px!important;max-width:720px;margin:0 auto;position:relative;z-index:1}
+
+.infographic-wrap{
+  margin:0 0 36px;border-radius:24px;overflow:hidden;
+  border:4px solid transparent;
+  background:linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg,var(--pk),var(--pp),var(--bl),var(--gn)) border-box;
+  box-shadow:0 12px 40px rgba(155,93,229,.2);
+  position:relative
+}
+.infographic-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--pk),var(--pp),var(--bl),var(--gn),var(--yl))
+}
+.infographic-label{
+  text-align:center;padding:14px 16px 10px;font-weight:800;font-size:1.05em;color:var(--tx);
+  background:linear-gradient(135deg,rgba(255,92,138,.08),rgba(155,93,229,.06))
+}
+.infographic-img{
+  display:block;width:100%;height:auto;vertical-align:middle;
+  background:#fff;cursor:zoom-in;transition:transform .3s
+}
+.infographic-wrap:hover .infographic-img{transform:scale(1.01)}
+.infographic-hint{
+  text-align:center;padding:10px 16px 14px;font-size:.78em;color:var(--tx2);
+  font-weight:600;background:rgba(255,255,255,.9)
+}
+.img-lightbox{
+  position:fixed;inset:0;z-index:500;background:rgba(15,20,40,.88);
+  display:none;align-items:center;justify-content:center;padding:16px;
+  cursor:zoom-out;backdrop-filter:blur(6px)
+}
+.img-lightbox.show{display:flex;animation:fadeIn .25s ease}
+.img-lightbox img{
+  max-width:100%;max-height:95vh;border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);cursor:default
+}
+.img-lightbox .lb-close{
+  position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;
+  background:#fff;border:none;font-size:1.4em;cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);font-weight:700;color:var(--tx)
+}
+
+.k-hero{text-align:center;margin:16px 0 32px;padding-top:12px}
+.k-hero .em{
+  font-size:64px;display:block;margin-bottom:10px;
+  animation:heroBounce 2s ease-in-out infinite
+}
+@keyframes heroBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.05)}}
+.k-hero h1{
+  font-size:2em;font-weight:900;
+  background:linear-gradient(135deg,var(--pk),var(--pp),var(--bl),var(--gn));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 4px rgba(155,93,229,.15))
+}
+.k-hero p{color:var(--tx2);font-size:.95em;margin-top:6px;font-weight:600}
+
+.k-section{margin-bottom:36px}
+.k-title{
+  font-size:1.25em;font-weight:900;margin-bottom:16px;display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,92,138,.12),rgba(155,93,229,.1),rgba(0,180,216,.08));
+  border:2px solid rgba(155,93,229,.2);color:var(--tx)
+}
+
+.ic{
+  background:var(--card);border-radius:20px;padding:20px;margin-bottom:10px;
+  border:3px solid rgba(0,180,216,.25);box-shadow:0 6px 24px rgba(0,180,216,.1)
+}
+.ic p{color:var(--tx2)}
+
+.cause-grid{display:flex;flex-direction:column;gap:14px}
+.cause{
+  border-radius:20px;padding:18px;position:relative;overflow:hidden;cursor:pointer;
+  transition:all .3s;border:3px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.06)
+}
+.cause::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:20px 20px 0 0}
+.cause:nth-child(1){background:linear-gradient(135deg,#FFF0F8,#fff);border-color:rgba(255,92,138,.35)}
+.cause:nth-child(1)::before{background:linear-gradient(90deg,var(--pk),var(--pp))}
+.cause:nth-child(2){background:linear-gradient(135deg,#E8F8FF,#fff);border-color:rgba(0,180,216,.35)}
+.cause:nth-child(2)::before{background:linear-gradient(90deg,var(--bl),var(--gn))}
+.cause:nth-child(3){background:linear-gradient(135deg,#FFF8E0,#fff);border-color:rgba(255,209,102,.5)}
+.cause:nth-child(3)::before{background:linear-gradient(90deg,var(--yl),var(--or))}
+.cause:nth-child(4){background:linear-gradient(135deg,#FFE8E8,#fff);border-color:rgba(255,107,107,.35)}
+.cause:nth-child(4)::before{background:linear-gradient(90deg,var(--rd),var(--pk))}
+.cause:nth-child(5){background:linear-gradient(135deg,#E8FFF0,#fff);border-color:rgba(46,204,113,.35)}
+.cause:nth-child(5)::before{background:linear-gradient(90deg,var(--gn),var(--bl))}
+.cause:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 12px 32px rgba(155,93,229,.18)}
+.cause-hd{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.cause-icon{
+  width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:1.6em;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.08)
+}
+.cause:nth-child(1) .cause-icon{background:linear-gradient(135deg,#FFE0EC,#F8D0FF)}
+.cause:nth-child(2) .cause-icon{background:linear-gradient(135deg,#D0F0FF,#C8FFE8)}
+.cause:nth-child(3) .cause-icon{background:linear-gradient(135deg,#FFF0C8,#FFE8A0)}
+.cause:nth-child(4) .cause-icon{background:linear-gradient(135deg,#FFE0E0,#FFD0D8)}
+.cause:nth-child(5) .cause-icon{background:linear-gradient(135deg,#D8FFE8,#C8F0FF)}
+.cause-name{font-weight:800;font-size:1em;color:var(--tx)}
+.cause-tag{font-size:.65em;padding:3px 10px;border-radius:12px;margin-left:6px;font-weight:700}
+.cause:nth-child(1) .cause-tag{background:rgba(255,92,138,.2);color:#E0407A}
+.cause:nth-child(2) .cause-tag{background:rgba(0,180,216,.2);color:#0097B2}
+.cause:nth-child(3) .cause-tag{background:rgba(255,209,102,.35);color:#E09000}
+.cause:nth-child(4) .cause-tag{background:rgba(255,107,107,.2);color:#E05050}
+.cause:nth-child(5) .cause-tag{background:rgba(46,204,113,.2);color:#27AE60}
+.cause-body{font-size:.9em;line-height:1.75;color:var(--tx2)}
+.cause-body b{color:var(--pp)}
+.cause-detail{
+  max-height:0;overflow:hidden;transition:max-height .4s ease;font-size:.85em;line-height:1.65;
+  color:var(--tx2);border-top:2px dashed transparent;margin-top:0;padding-top:0
+}
+.cause.open .cause-detail{max-height:400px;border-top-color:rgba(155,93,229,.25);margin-top:12px;padding-top:12px}
+.cause-toggle{font-size:.78em;color:var(--pp);margin-top:8px;display:block;font-weight:700}
+
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:16px 0}
+.flow-node{
+  border-radius:18px;padding:16px 22px;text-align:center;max-width:400px;width:100%;
+  border:3px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.06);background:#fff
+}
+.flow-node:nth-child(1){border-color:rgba(255,92,138,.45);background:linear-gradient(135deg,#FFF5F8,#fff)}
+.flow-node:nth-child(3){border-color:rgba(155,93,229,.45);background:linear-gradient(135deg,#F5F0FF,#fff)}
+.flow-node:nth-child(5){border-color:rgba(0,180,216,.45);background:linear-gradient(135deg,#F0FAFF,#fff)}
+.flow-node:nth-child(7){border-color:rgba(255,209,102,.55);background:linear-gradient(135deg,#FFFBF0,#fff)}
+.flow-node:nth-child(9){border-color:rgba(46,204,113,.45);background:linear-gradient(135deg,#F0FFF5,#fff)}
+.flow-node .fn-em{font-size:1.8em;display:block;margin-bottom:6px}
+.flow-node .fn-t{font-weight:800;font-size:.95em;margin-bottom:4px;color:var(--tx)}
+.flow-node .fn-d{font-size:.82em;color:var(--tx2);line-height:1.5}
+.flow-node.warn{border-color:rgba(255,107,107,.5)!important;background:linear-gradient(135deg,#FFF0F0,#fff)!important}
+.flow-node.warn .fn-t{color:var(--rd)!important}
+.flow-arrow{font-size:1.5em;padding:6px 0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,var(--pk),var(--pp),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.break-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.brk{
+  border-radius:20px;padding:18px;text-align:center;transition:all .3s;position:relative;overflow:hidden;
+  border:3px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,.06);background:#fff
+}
+.brk:nth-child(1){border-color:rgba(46,204,113,.4);background:linear-gradient(160deg,#F0FFF5,#fff)}
+.brk:nth-child(2){border-color:rgba(0,180,216,.4);background:linear-gradient(160deg,#F0FAFF,#fff)}
+.brk:nth-child(3){border-color:rgba(255,209,102,.5);background:linear-gradient(160deg,#FFFBF0,#fff)}
+.brk:nth-child(4){border-color:rgba(255,159,67,.45);background:linear-gradient(160deg,#FFF5E8,#fff)}
+.brk:nth-child(5){border-color:rgba(255,92,138,.4);background:linear-gradient(160deg,#FFF0F5,#fff)}
+.brk:nth-child(6){border-color:rgba(155,93,229,.4);background:linear-gradient(160deg,#F5F0FF,#fff)}
+.brk:hover{transform:translateY(-5px) rotate(-1deg);box-shadow:0 12px 28px rgba(155,93,229,.2)}
+.brk-icon{font-size:2.2em;margin-bottom:10px;display:block}
+.brk-name{font-weight:800;font-size:.95em;margin-bottom:8px;color:var(--tx)}
+.brk-desc{font-size:.82em;color:var(--tx2);line-height:1.55}
+.brk-desc b{color:var(--pp)}
+.brk-diff{position:absolute;top:10px;right:10px;font-size:.62em;padding:4px 10px;border-radius:12px;font-weight:800}
+.brk:nth-child(1) .brk-diff,.brk:nth-child(2) .brk-diff{background:var(--gn);color:#fff}
+.brk:nth-child(3) .brk-diff,.brk:nth-child(4) .brk-diff{background:var(--yl);color:#5C4A00}
+.brk:nth-child(5) .brk-diff,.brk:nth-child(6) .brk-diff{background:linear-gradient(135deg,var(--pk),var(--pp));color:#fff}
+
+.kahoot-card{
+  background:#fff;border-radius:20px;padding:28px 22px;margin-top:10px;text-align:center;
+  border:3px solid rgba(70,23,143,.25);box-shadow:0 8px 32px rgba(70,23,143,.15);
+  background:linear-gradient(160deg,#F8F0FF 0%,#fff 45%,#F0FAFF 100%)
+}
+.kahoot-logo{font-size:2.5em;margin-bottom:8px;display:block}
+.kahoot-card h3{font-size:1.1em;font-weight:900;color:var(--tx);margin-bottom:8px;line-height:1.5}
+.kahoot-desc{font-size:.88em;color:var(--tx2);line-height:1.65;margin-bottom:20px;font-weight:600}
+.kahoot-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px 36px;border-radius:50px;font-size:1.05em;font-weight:900;color:#fff;text-decoration:none;
+  background:linear-gradient(135deg,#46178F,#7B2FF7,#9B5DE5);
+  box-shadow:0 8px 24px rgba(70,23,143,.35);transition:all .25s;border:none;cursor:pointer
+}
+.kahoot-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 32px rgba(70,23,143,.45)}
+.kahoot-btn:active{transform:scale(.98)}
+.kahoot-steps{
+  margin-top:22px;padding:16px;border-radius:16px;background:rgba(255,255,255,.7);
+  border:2px dashed rgba(155,93,229,.3);text-align:left
+}
+.kahoot-steps ol{margin:0;padding-left:22px;font-size:.85em;color:var(--tx2);line-height:1.8;font-weight:600}
+.kahoot-steps li{margin-bottom:4px}
+.kahoot-link{font-size:.75em;color:var(--tx2);margin-top:14px;font-weight:600}
+.kahoot-link a{color:var(--pp);word-break:break-all}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.k-quote{
+  background:linear-gradient(135deg,rgba(255,92,138,.1),rgba(155,93,229,.08),rgba(0,180,216,.06));
+  border-left:5px solid var(--pp);border-radius:0 16px 16px 0;padding:18px 20px;margin:20px 0;
+  font-size:.95em;line-height:1.75;color:var(--tx2);font-style:italic;
+  box-shadow:0 4px 16px rgba(155,93,229,.1)
+}
+.k-quote cite{display:block;font-style:normal;font-size:.8em;color:var(--tx2);margin-top:8px;font-weight:600}
+.k-quote.summary{border-left:none;border:3px solid rgba(155,93,229,.25);border-radius:16px;text-align:center;font-style:normal}
+
+.hl-pk{color:var(--pk)!important}
+.hl-pp{color:var(--pp)!important}
+.hl-bl{color:var(--bl)!important}
+.hl-yl{color:#E09000!important}
+.hl-tx{color:var(--tx)!important}
+
+@media(max-width:600px){.break-grid{grid-template-columns:1fr}.k-hero h1{font-size:1.65em}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:linear-gradient(var(--pk),var(--pp));border-radius:3px}
+</style>
+</head>
+<body class="lang-cn">
+
+<div class="lang-bar">
+<button class="lang-btn on" id="btnCn" onclick="setLang('cn')">中文</button>
+<button class="lang-btn" id="btnEn" onclick="setLang('en')">English</button>
+</div>
+
+<div class="img-lightbox" id="imgLb" onclick="closeImgLb()">
+<button class="lb-close" onclick="closeImgLb()" aria-label="关闭">✕</button>
+<img src="ChatGPT Image Jun 14, 2026, 10_13_42 PM.png" alt="信息泡泡大冒险图解" onclick="event.stopPropagation()"/>
+</div>
+
+<!-- ===== 活动主页 ===== -->
+<div class="page-view on" id="view-hub">
+<div class="know">
+
+<div class="k-hero">
+<span class="em">🫧</span>
+<h1>
+<span class="bi-cn">泡泡宇宙</span>
+<span class="bi-en">Bubble Universe</span>
+</h1>
+<p>
+<span class="bi-cn">信息素养主题学习 · 四个活动带你认识并打破信息茧房</span>
+<span class="bi-en">Media literacy hub · Four activities to explore and break filter bubbles</span>
+</p>
+</div>
+
+<div class="hub-route">
+<span class="bi-cn">📍 推荐路线：<b>茧房迷宫</b> → <b>泡泡百科</b> → <b>闯关答题</b> → <b>创意破茧</b> 用 AI 创作分享！</span>
+<span class="bi-en">📍 Route: <b>Bubble Maze</b> → <b>Bubble Wiki</b> → <b>Quiz Quest</b> → <b>Creative Studio</b>!</span>
+</div>
+
+<div class="activity-list">
+
+<div class="activity-card" onclick="showView('game')">
+<div class="act-badge">🎮</div>
+<div class="act-info">
+<div class="act-label"><span class="bi-cn">活动一 · 互动游戏</span><span class="bi-en">Activity 1 · Game</span></div>
+<div class="act-name"><span class="bi-cn">茧房迷宫</span><span class="bi-en">Bubble Maze</span></div>
+<div class="act-desc">
+<span class="bi-cn">模拟刷手机体验，亲眼看见算法如何一步步给你吹出信息泡泡</span>
+<span class="bi-en">Simulate scrolling feeds and watch algorithms trap you in a bubble</span>
+</div>
+</div>
+<div class="act-go"><span class="bi-cn">进入 →</span><span class="bi-en">Go →</span></div>
+</div>
+
+<div class="activity-card" onclick="showView('learn')">
+<div class="act-badge">📖</div>
+<div class="act-info">
+<div class="act-label"><span class="bi-cn">活动二 · 知识精读</span><span class="bi-en">Activity 2 · Reading</span></div>
+<div class="act-name"><span class="bi-cn">泡泡百科</span><span class="bi-en">Bubble Wiki</span></div>
+<div class="act-desc">
+<span class="bi-cn">一图读懂 + 深度解析：信息茧房是什么、怎么形成、如何打破</span>
+<span class="bi-en">Visual guide + deep dive: what bubbles are, how they form, how to break free</span>
+</div>
+</div>
+<div class="act-go"><span class="bi-cn">进入 →</span><span class="bi-en">Go →</span></div>
+</div>
+
+<div class="activity-card" onclick="showView('quiz')">
+<div class="act-badge">🎯</div>
+<div class="act-info">
+<div class="act-label"><span class="bi-cn">活动三 · 在线答题</span><span class="bi-en">Activity 3 · Quiz</span></div>
+<div class="act-name"><span class="bi-cn">闯关答题</span><span class="bi-en">Quiz Quest</span></div>
+<div class="act-desc">
+<span class="bi-cn">Kahoot 在线挑战，检验你对信息茧房的理解，和同学比比分数</span>
+<span class="bi-en">Kahoot challenge—test your knowledge and compare scores with classmates</span>
+</div>
+</div>
+<div class="act-go"><span class="bi-cn">进入 →</span><span class="bi-en">Go →</span></div>
+</div>
+
+<div class="activity-card" onclick="showView('create')">
+<div class="act-badge">🎨</div>
+<div class="act-info">
+<div class="act-label"><span class="bi-cn">活动四 · AI 创意</span><span class="bi-en">Activity 4 · AI Create</span></div>
+<div class="act-name"><span class="bi-cn">创意破茧工坊</span><span class="bi-en">Creative Bubble Studio</span></div>
+<div class="act-desc">
+<span class="bi-cn">用 AI 做歌曲、漫画、海报、MV、舞蹈……创作作品，帮小学生了解并打破信息茧房</span>
+<span class="bi-en">Use AI for songs, comics, posters, MVs, dance—help younger students learn to break filter bubbles</span>
+</div>
+</div>
+<div class="act-go"><span class="bi-cn">进入 →</span><span class="bi-en">Go →</span></div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- ===== 活动一：茧房迷宫（体验馆游戏） ===== -->
+<div class="page-view" id="view-game">
+<div class="activity-header">
+<button class="hub-back" onclick="showView('hub')"><span class="bi-cn">← 活动主页</span><span class="bi-en">← Home</span></button>
+<span class="act-hdr-title"><span class="bi-cn">活动一 · 茧房迷宫</span><span class="bi-en">Activity 1 · Bubble Maze</span></span>
+</div>
+<iframe id="gameFrame" src="-信息茧房体验馆.html?lang=cn" title="茧房迷宫互动游戏"></iframe>
+</div>
+
+<!-- ===== 活动二：泡泡百科 ===== -->
+<div class="page-view" id="view-learn">
+<div class="activity-header">
+<button class="hub-back" onclick="showView('hub')"><span class="bi-cn">← 活动主页</span><span class="bi-en">← Home</span></button>
+<span class="act-hdr-title"><span class="bi-cn">活动二 · 泡泡百科</span><span class="bi-en">Activity 2 · Bubble Wiki</span></span>
+</div>
+<div class="know">
+
+<div class="k-hero" style="margin-top:8px">
+<span class="em">📖</span>
+<h1 style="font-size:1.5em">
+<span class="bi-cn">泡泡百科 · 知识精读</span>
+<span class="bi-en">Bubble Wiki · Deep Reading</span>
+</h1>
+<p>
+<span class="bi-cn">了解成因，才能真正打破信息泡泡</span>
+<span class="bi-en">Understand the causes to truly break free</span>
+</p>
+</div>
+
+<!-- INFOGRAPHIC -->
+<div class="infographic-wrap">
+<div class="infographic-label">
+<span class="bi-cn">🎨 信息泡泡大冒险 · 一图读懂</span>
+<span class="bi-en">🎨 Information Bubble Adventure · Visual Guide</span>
+</div>
+<img
+  class="infographic-img"
+  src="ChatGPT Image Jun 14, 2026, 10_13_42 PM.png"
+  alt="信息泡泡大冒险图解：信息茧房的形成、影响与打破方法"
+  loading="lazy"
+  onclick="openImgLb()"
+/>
+<div class="infographic-hint">
+<span class="bi-cn">👆 点击图片可放大查看 · 中英文对照</span>
+<span class="bi-en">👆 Tap image to zoom · Bilingual CN / EN</span>
+</div>
+</div>
+
+<!-- WHAT IS IT -->
+<div class="k-section">
+<div class="k-title">
+<span class="bi-cn">📖 什么是信息茧房？</span>
+<span class="bi-en">📖 What Is a Filter Bubble?</span>
+</div>
+<div class="ic" style="margin:0">
+<p style="font-size:.95em;line-height:1.85">
+<span class="bi-cn"><b class="hl-yl">信息茧房（Filter Bubble / Echo Chamber）</b>是指：在个性化推荐算法的作用下，用户逐渐只能看到<b class="hl-tx">符合自己偏好和立场</b>的信息，就像被裹在一个<b class="hl-pp">看不见的蚕茧</b>里，对外界的多元信息越来越隔绝。</span>
+<span class="bi-en"><b class="hl-yl">Filter Bubble / Echo Chamber</b> refers to how personalized recommendation algorithms gradually show users only information that <b class="hl-tx">matches their preferences and beliefs</b>—like being wrapped in an <b class="hl-pp">invisible cocoon</b>, increasingly cut off from diverse perspectives.</span>
+</p>
+<div class="k-quote">
+<span class="bi-cn">"我们以为自己在浏览整个互联网，<br>实际上算法只给我们看了它选择的那一小片。"<cite>— 伊莱·帕里泽 (Eli Pariser)，《过滤气泡》作者</cite></span>
+<span class="bi-en">"We think we're browsing the whole internet,<br>but algorithms only show us the slice they choose."<cite>— Eli Pariser, author of <i>The Filter Bubble</i></cite></span>
+</div>
+</div>
+</div>
+
+<!-- HOW IT FORMS -->
+<div class="k-section">
+<div class="k-title">
+<span class="bi-cn">⚙️ 信息茧房是怎么形成的？</span>
+<span class="bi-en">⚙️ How Do Filter Bubbles Form?</span>
+</div>
+
+<div class="flow">
+<div class="flow-node">
+<span class="fn-em">👆</span>
+<div class="fn-t"><span class="bi-cn">1. 你的每次操作都是数据</span><span class="bi-en">1. Every action is data</span></div>
+<div class="fn-d"><span class="bi-cn">点赞、评论、停留时间、滑动速度……算法全部在记录</span><span class="bi-en">Likes, comments, dwell time, scroll speed—algorithms track it all</span></div>
+</div>
+<div class="flow-arrow">⬇️</div>
+<div class="flow-node">
+<span class="fn-em">🤖</span>
+<div class="fn-t"><span class="bi-cn">2. 算法建立"用户画像"</span><span class="bi-en">2. Algorithms build your profile</span></div>
+<div class="fn-d"><span class="bi-cn">推断你的年龄、兴趣、立场、情绪倾向</span><span class="bi-en">Inferring age, interests, beliefs, and emotional tendencies</span></div>
+</div>
+<div class="flow-arrow">⬇️</div>
+<div class="flow-node">
+<span class="fn-em">🎯</span>
+<div class="fn-t"><span class="bi-cn">3. 优先推送你"喜欢"的内容</span><span class="bi-en">3. Push what you "like"</span></div>
+<div class="fn-d"><span class="bi-cn">目标是让你停留更久、互动更多 = 更多广告收入</span><span class="bi-en">Goal: keep you longer, engage more = more ad revenue</span></div>
+</div>
+<div class="flow-arrow">⬇️</div>
+<div class="flow-node">
+<span class="fn-em">🫧</span>
+<div class="fn-t"><span class="bi-cn">4. 泡泡越吹越大</span><span class="bi-en">4. The bubble grows</span></div>
+<div class="fn-d"><span class="bi-cn">你看到的越来越单一，你以为的"共识"只是算法的选择</span><span class="bi-en">Your feed narrows; what feels like "consensus" is algorithmic curation</span></div>
+</div>
+<div class="flow-arrow">⬇️</div>
+<div class="flow-node warn">
+<span class="fn-em">🔒</span>
+<div class="fn-t"><span class="bi-cn">5. 信息茧房形成</span><span class="bi-en">5. Filter bubble locked in</span></div>
+<div class="fn-d"><span class="bi-cn">对异见越来越不耐受，偏见越来越深，视野越来越窄</span><span class="bi-en">Less tolerance for dissent, deeper bias, narrower worldview</span></div>
+</div>
+</div>
+
+<div class="cause-grid" style="margin-top:20px">
+
+<div class="cause" onclick="this.classList.toggle('open')">
+<div class="cause-hd"><div class="cause-icon">🤖</div><div>
+<span class="cause-name"><span class="bi-cn">算法推荐机制</span><span class="bi-en">Algorithmic Recommendation</span></span>
+<span class="cause-tag"><span class="bi-cn">技术层</span><span class="bi-en">Technical</span></span>
+</div></div>
+<div class="cause-body">
+<span class="bi-cn">平台的<b>个性化推荐算法</b>是信息茧房的第一推手。抖音、微博、B站、小红书——几乎所有平台都在用。算法的核心逻辑是：<b>你喜欢什么，就给你更多什么</b>。</span>
+<span class="bi-en">Platform <b>personalized recommendation algorithms</b> are the primary driver. Douyin, Weibo, Bilibili, Xiaohongshu—nearly every platform uses them. Core logic: <b>show you more of what you like</b>.</span>
+</div>
+<div class="cause-detail">
+<span class="bi-cn"><b>🔍 算法是怎么做的？</b><br>
+• <b>协同过滤</b>：跟你行为相似的人喜欢X，你大概率也会喜欢X<br>
+• <b>内容画像</b>：你经常看猫视频 → 标签"猫爱好者" → 推更多猫<br>
+• <b>点击率预测</b>：预测你点击概率最高的排在最前面<br>
+• <b>停留时间优化</b>：你在某类内容上停留越久，推得越多<br><br>
+⚠️ 算法本身没有"恶意"，但<b>优化目标（停留时间/互动量）</b>天然会导致信息窄化。</span>
+<span class="bi-en"><b>🔍 How algorithms work:</b><br>
+• <b>Collaborative filtering</b>: people like you liked X, so you'll probably like X too<br>
+• <b>Content profiling</b>: watch cat videos often → tagged "cat lover" → more cats<br>
+• <b>Click prediction</b>: highest predicted click rate ranks first<br>
+• <b>Dwell time optimization</b>: longer you stay on a topic, more you get<br><br>
+⚠️ Algorithms aren't "malicious," but optimizing for <b>engagement/dwell time</b> naturally narrows information.</span>
+</div>
+<span class="cause-toggle"><span class="bi-cn">👆 点击展开详情</span><span class="bi-en">👆 Tap to expand</span></span>
+</div>
+
+<div class="cause" onclick="this.classList.toggle('open')">
+<div class="cause-hd"><div class="cause-icon">🧠</div><div>
+<span class="cause-name"><span class="bi-cn">确认偏误</span><span class="bi-en">Confirmation Bias</span></span>
+<span class="cause-tag"><span class="bi-cn">心理层</span><span class="bi-en">Psychological</span></span>
+</div></div>
+<div class="cause-body">
+<span class="bi-cn">人类大脑天生就有<b>确认偏误（Confirmation Bias）</b>：我们倾向于<b>搜索、关注、记住</b>支持自己已有观点的信息，而无意识地忽略甚至反感对立的信息。</span>
+<span class="bi-en">Our brains have innate <b>confirmation bias</b>: we tend to <b>seek, follow, and remember</b> information that supports existing beliefs, while unconsciously ignoring or rejecting opposing views.</span>
+</div>
+<div class="cause-detail">
+<span class="bi-cn"><b>🔬 心理学实验：</b><br>
+斯坦福大学经典实验中，支持和反对死刑的两组人阅读完全相同的研究报告后，<b>各自更加坚信自己原来的立场</b>——同样的证据，被大脑"选择性解读"了。<br><br>
+<b>在社交媒体上的表现：</b><br>
+• 看到认同的内容 → 点赞、转发 → 算法推更多 ✅<br>
+• 看到反对的内容 → 划走、不看 → 算法减少推送 ❌<br>
+• 结果：<b>你的心理偏误 + 算法放大 = 双重茧房</b></span>
+<span class="bi-en"><b>🔬 Psychology experiment:</b><br>
+In a Stanford classic study, pro- and anti-death penalty groups read the same research—and <b>both became more convinced of their original stance</b>. Same evidence, selectively interpreted.<br><br>
+<b>On social media:</b><br>
+• Agreeable content → like, share → algorithm pushes more ✅<br>
+• Opposing content → scroll away → algorithm reduces it ❌<br>
+• Result: <b>your bias + algorithm amplification = double bubble</b></span>
+</div>
+<span class="cause-toggle"><span class="bi-cn">👆 点击展开详情</span><span class="bi-en">👆 Tap to expand</span></span>
+</div>
+
+<div class="cause" onclick="this.classList.toggle('open')">
+<div class="cause-hd"><div class="cause-icon">💰</div><div>
+<span class="cause-name"><span class="bi-cn">平台商业模式</span><span class="bi-en">Platform Business Model</span></span>
+<span class="cause-tag"><span class="bi-cn">经济层</span><span class="bi-en">Economic</span></span>
+</div></div>
+<div class="cause-body">
+<span class="bi-cn">社交媒体的核心盈利模式是<b>注意力经济</b>：用户停留时间越长 → 看到广告越多 → 平台赚钱越多。而让用户留得最久的方式，就是<b>投其所好</b>。</span>
+<span class="bi-en">Social media profits through the <b>attention economy</b>: longer users stay → more ads seen → more revenue. The best way to keep users? <b>Give them what they want</b>.</span>
+</div>
+<div class="cause-detail">
+<span class="bi-cn"><b>💡 关键数据：</b><br>
+• YouTube的推荐算法驱动了<b>70%</b>的总观看量<br>
+• 抖音用户平均每天使用<b>118分钟</b><br>
+• Facebook的内部文件显示，愤怒和极端内容获得的互动量是普通内容的<b>5倍以上</b><br><br>
+平台并非故意想制造茧房，但当"让用户上瘾"成为核心KPI时，茧房就是<b>必然的副产品</b>。</span>
+<span class="bi-en"><b>💡 Key data:</b><br>
+• YouTube's algorithm drives <b>70%</b> of total watch time<br>
+• Douyin users average <b>118 minutes</b> daily<br>
+• Facebook internal files: angry/extreme content gets <b>5× more engagement</b><br><br>
+Platforms don't intend to create bubbles—but when "addiction" is the KPI, bubbles are an <b>inevitable side effect</b>.</span>
+</div>
+<span class="cause-toggle"><span class="bi-cn">👆 点击展开详情</span><span class="bi-en">👆 Tap to expand</span></span>
+</div>
+
+<div class="cause" onclick="this.classList.toggle('open')">
+<div class="cause-hd"><div class="cause-icon">👥</div><div>
+<span class="cause-name"><span class="bi-cn">社交圈层固化</span><span class="bi-en">Social Circle Solidification</span></span>
+<span class="cause-tag"><span class="bi-cn">社会层</span><span class="bi-en">Social</span></span>
+</div></div>
+<div class="cause-body">
+<span class="bi-cn">我们倾向于和<b>观点相似的人</b>交朋友、加群组、关注同类博主。社交媒体上的"关注"机制让人很容易构建一个<b>高度同质化的信息环境</b>。</span>
+<span class="bi-en">We tend to befriend, join groups, and follow creators who <b>share our views</b>. The "follow" mechanism makes it easy to build a <b>highly homogeneous information environment</b>.</span>
+</div>
+<div class="cause-detail">
+<span class="bi-cn"><b>🌐 "信息圈地"现象：</b><br>
+• 微博：关注的人大多和你立场一致<br>
+• 微信群：群内意见趋同，异见者被"踢出群聊"<br>
+• B站：弹幕和评论区形成"圈子文化"<br>
+• 小红书：同一兴趣标签下形成封闭社区<br><br>
+线上的圈层比线下更极端——因为<b>取消关注只需一秒</b>，你可以轻松屏蔽掉所有不同声音。</span>
+<span class="bi-en"><b>🌐 "Information enclosure":</b><br>
+• Weibo: most follows share your stance<br>
+• WeChat groups: opinions converge; dissenters get removed<br>
+• Bilibili: danmaku and comments form "circle culture"<br>
+• Xiaohongshu: interest tags create closed communities<br><br>
+Online circles are more extreme than offline—<b>unfollowing takes one second</b>, making it easy to silence all dissent.</span>
+</div>
+<span class="cause-toggle"><span class="bi-cn">👆 点击展开详情</span><span class="bi-en">👆 Tap to expand</span></span>
+</div>
+
+<div class="cause" onclick="this.classList.toggle('open')">
+<div class="cause-hd"><div class="cause-icon">😤</div><div>
+<span class="cause-name"><span class="bi-cn">情绪驱动传播</span><span class="bi-en">Emotion-Driven Spread</span></span>
+<span class="cause-tag"><span class="bi-cn">传播层</span><span class="bi-en">Propagation</span></span>
+</div></div>
+<div class="cause-body">
+<span class="bi-cn"><b>愤怒、恐惧、震惊</b>等强烈情绪的内容传播速度是理性内容的<b>6倍以上</b>。平台算法发现这类内容"效果好"后，会优先推荐。</span>
+<span class="bi-en">Content triggering <b>anger, fear, or shock</b> spreads <b>6× faster</b> than rational content. Algorithms notice this "performance" and prioritize it.</span>
+</div>
+<div class="cause-detail">
+<span class="bi-cn"><b>📊 MIT研究发现：</b><br>
+在Twitter上，<b>假新闻的传播速度是真新闻的6倍</b>，覆盖人数多出10倍。<br><br>
+<b>情绪升级路径：</b><br>
+温和观点 → 获得少量互动<br>
+极端观点 → 引发大量争论 → 算法判定为"热门" → 推给更多人<br><br>
+结果：<b>最极端的声音获得最多曝光</b>，中间温和的立场被挤出视野，这加速了信息茧房的极化效应。</span>
+<span class="bi-en"><b>📊 MIT research:</b><br>
+On Twitter, <b>false news spreads 6× faster</b> than true news, reaching 10× more people.<br><br>
+<b>Emotional escalation path:</b><br>
+Moderate views → little engagement<br>
+Extreme views → heated debate → algorithm marks "trending" → pushed to more users<br><br>
+Result: <b>the most extreme voices get the most exposure</b>, moderate positions vanish, accelerating polarization.</span>
+</div>
+<span class="cause-toggle"><span class="bi-cn">👆 点击展开详情</span><span class="bi-en">👆 Tap to expand</span></span>
+</div>
+
+</div>
+</div>
+
+<!-- HOW TO BREAK -->
+<div class="k-section">
+<div class="k-title">
+<span class="bi-cn">🛡️ 如何打破信息茧房？</span>
+<span class="bi-en">🛡️ How to Break Free?</span>
+</div>
+
+<div class="break-grid">
+
+<div class="brk">
+<span class="brk-diff"><span class="bi-cn">⭐ 简单</span><span class="bi-en">⭐ Easy</span></span>
+<span class="brk-icon">🔄</span>
+<div class="brk-name"><span class="bi-cn">主动搜索对立面</span><span class="bi-en">Seek Opposing Views</span></div>
+<div class="brk-desc">
+<span class="bi-cn">看到一篇特别认同的文章时，<b>刻意搜索相反观点</b>。比如看完"早起改变人生"后搜搜"夜猫子的优势"。这是最简单但最有效的破茧方法。</span>
+<span class="bi-en">When you read something you strongly agree with, <b>deliberately search for the opposite view</b>. E.g., after "early rising changes lives," search "benefits of being a night owl." Simple but highly effective.</span>
+</div>
+</div>
+
+<div class="brk">
+<span class="brk-diff"><span class="bi-cn">⭐ 简单</span><span class="bi-en">⭐ Easy</span></span>
+<span class="brk-icon">📚</span>
+<div class="brk-name"><span class="bi-cn">多样化信息源</span><span class="bi-en">Diversify Sources</span></div>
+<div class="brk-desc">
+<span class="bi-cn">不要只用一个APP获取信息。<b>同时使用至少3个不同立场的新闻源</b>。比如：同一件事，看看不同媒体怎么报道——差异会让你震惊。</span>
+<span class="bi-en">Don't rely on one app. <b>Use at least 3 news sources with different perspectives</b>. Compare how different outlets cover the same event—the gaps will surprise you.</span>
+</div>
+</div>
+
+<div class="brk">
+<span class="brk-diff"><span class="bi-cn">⭐⭐ 中等</span><span class="bi-en">⭐⭐ Medium</span></span>
+<span class="brk-icon">🔍</span>
+<div class="brk-name"><span class="bi-cn">追问信息来源</span><span class="bi-en">Question Sources</span></div>
+<div class="brk-desc">
+<span class="bi-cn">看到每一条信息时问自己：<b>谁说的？有什么依据？数据从哪来？</b>是同行评审的研究还是某个博主的感想？是事实还是观点？</span>
+<span class="bi-en">For every piece of info, ask: <b>Who said it? What's the evidence? Where's the data from?</b> Peer-reviewed research or a blogger's opinion? Fact or viewpoint?</span>
+</div>
+</div>
+
+<div class="brk">
+<span class="brk-diff"><span class="bi-cn">⭐⭐ 中等</span><span class="bi-en">⭐⭐ Medium</span></span>
+<span class="brk-icon">😤</span>
+<div class="brk-name"><span class="bi-cn">警惕情绪操控</span><span class="bi-en">Beware Emotional Manipulation</span></div>
+<div class="brk-desc">
+<span class="bi-cn">当一条内容让你<b>特别愤怒、恐惧、或感动</b>时——先暂停10秒。强烈情绪往往是操控的信号。冷静下来再决定是否点赞转发。</span>
+<span class="bi-en">When content makes you <b>very angry, afraid, or moved</b>—pause 10 seconds. Strong emotions often signal manipulation. Cool down before liking or sharing.</span>
+</div>
+</div>
+
+<div class="brk">
+<span class="brk-diff"><span class="bi-cn">⭐⭐⭐ 进阶</span><span class="bi-en">⭐⭐⭐ Advanced</span></span>
+<span class="brk-icon">🧹</span>
+<div class="brk-name"><span class="bi-cn">定期清理算法</span><span class="bi-en">Reset Your Algorithm</span></div>
+<div class="brk-desc">
+<span class="bi-cn"><b>删除搜索/浏览历史</b>、使用无痕模式浏览、点击"不感兴趣"来重置推荐。抖音和B站都有"刷新推荐"的功能，定期使用。</span>
+<span class="bi-en"><b>Clear search/browse history</b>, use private browsing, tap "not interested" to reset feeds. Douyin and Bilibili offer "refresh recommendations"—use them regularly.</span>
+</div>
+</div>
+
+<div class="brk">
+<span class="brk-diff"><span class="bi-cn">⭐⭐⭐ 进阶</span><span class="bi-en">⭐⭐⭐ Advanced</span></span>
+<span class="brk-icon">🤝</span>
+<div class="brk-name"><span class="bi-cn">与不同圈子交流</span><span class="bi-en">Talk Across Circles</span></div>
+<div class="brk-desc">
+<span class="bi-cn"><b>主动和想法不同的人对话</b>。不是为了说服对方，而是为了理解"为什么有人会这么想"。最好的破茧方式是线下真实交流。</span>
+<span class="bi-en"><b>Talk with people who think differently</b>. Not to convince them, but to understand "why they think that way." Real face-to-face conversation is the best way to break free.</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- SUMMARY（活动二末尾） -->
+<div class="k-section">
+<div class="k-title">
+<span class="bi-cn">💡 一句话总结</span>
+<span class="bi-en">💡 In One Sentence</span>
+</div>
+<div class="k-quote summary" style="font-size:1em">
+<span class="bi-cn"><b class="hl-pp">你刷到的 ≠ 全部的真相</b><br><br>
+算法不是敌人，无知才是。<br>
+当你知道泡泡的存在，<br>
+你就已经迈出了打破它的第一步。🫧</span>
+<span class="bi-en"><b class="hl-pp">What you see ≠ the full truth</b><br><br>
+Algorithms aren't the enemy—ignorance is.<br>
+Once you know the bubble exists,<br>
+you've already taken the first step to break it.🫧</span>
+</div>
+
+<div style="text-align:center;margin-top:16px">
+<p style="font-size:.85em;color:var(--tx2);line-height:1.65;font-weight:600">
+<span class="bi-cn">📖 推荐阅读：<br>
+《过滤气泡》(The Filter Bubble) — Eli Pariser<br>
+《算法的陷阱》— 凯西·奥尼尔<br>
+《注意力商人》(The Attention Merchants) — Tim Wu</span>
+<span class="bi-en">📖 Further reading:<br>
+<i>The Filter Bubble</i> — Eli Pariser<br>
+<i>Weapons of Math Destruction</i> — Cathy O'Neil<br>
+<i>The Attention Merchants</i> — Tim Wu</span>
+</p>
+</div>
+
+<div style="text-align:center;margin-top:20px">
+<button class="hub-back" style="font-size:.9em;padding:12px 28px" onclick="showView('quiz')">
+<span class="bi-cn">下一步：活动三 闯关答题 →</span>
+<span class="bi-en">Next: Activity 3 Quiz Quest →</span>
+</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- ===== 活动三：闯关答题 ===== -->
+<div class="page-view" id="view-quiz">
+<div class="activity-header">
+<button class="hub-back" onclick="showView('hub')"><span class="bi-cn">← 活动主页</span><span class="bi-en">← Home</span></button>
+<span class="act-hdr-title"><span class="bi-cn">活动三 · 闯关答题</span><span class="bi-en">Activity 3 · Quiz Quest</span></span>
+</div>
+<div class="know">
+
+<div class="k-hero" style="margin-top:8px">
+<span class="em">🎯</span>
+<h1 style="font-size:1.5em">
+<span class="bi-cn">闯关答题 · Kahoot 挑战</span>
+<span class="bi-en">Quiz Quest · Kahoot Challenge</span>
+</h1>
+<p>
+<span class="bi-cn">检验学习成果，看看你能得多少分！</span>
+<span class="bi-en">Test what you learned—how high can you score?</span>
+</p>
+</div>
+
+<div class="k-section" style="margin-bottom:0">
+<div class="kahoot-card">
+<span class="kahoot-logo">🎮</span>
+<h3>
+<span class="bi-cn">来 Kahoot 挑战一下！检验你对信息茧房的理解 💡</span>
+<span class="bi-en">Take the Kahoot challenge! Test what you learned 💡</span>
+</h3>
+<p class="kahoot-desc">
+<span class="bi-cn">点击下方按钮，进入 Kahoot 答题页面。输入你的名字后开始答题，看看你能得多少分！</span>
+<span class="bi-en">Click the button below to open Kahoot. Enter your name and start the quiz—see how high you can score!</span>
+</p>
+<a class="kahoot-btn" href="https://kahoot.it/challenge/08307247" target="_blank" rel="noopener noreferrer">
+<span>🚀</span>
+<span class="bi-cn">开始 Kahoot 答题</span>
+<span class="bi-en">Start Kahoot Quiz</span>
+</a>
+<div class="kahoot-steps">
+<span class="bi-cn"><b>📋 答题步骤：</b></span>
+<span class="bi-en"><b>📋 How to play:</b></span>
+<ol>
+<li class="bi-cn">点击上方「开始 Kahoot 答题」按钮</li>
+<li class="bi-en">Click "Start Kahoot Quiz" above</li>
+<li class="bi-cn">在新页面输入你的名字（昵称）</li>
+<li class="bi-en">Enter your name (nickname) on the new page</li>
+<li class="bi-cn">阅读题目，选择你认为正确的答案</li>
+<li class="bi-en">Read each question and pick your answer</li>
+<li class="bi-cn">全部答完后查看得分，和同学比比谁更厉害！</li>
+<li class="bi-en">Check your score at the end and compare with classmates!</li>
+</ol>
+</div>
+<p class="kahoot-link">
+<span class="bi-cn">链接：</span><span class="bi-en">Link: </span>
+<a href="https://kahoot.it/challenge/08307247" target="_blank" rel="noopener noreferrer">https://kahoot.it/challenge/08307247</a>
+</p>
+</div>
+</div>
+
+<div style="text-align:center;margin-top:20px">
+<button class="hub-back" style="font-size:.9em;padding:12px 28px" onclick="showView('create')">
+<span class="bi-cn">下一步：活动四 创意破茧 →</span>
+<span class="bi-en">Next: Activity 4 Creative Studio →</span>
+</button>
+</div>
+
+</div>
+</div>
+
+<!-- ===== 活动四：创意破茧工坊 ===== -->
+<div class="page-view" id="view-create">
+<div class="activity-header">
+<button class="hub-back" onclick="showView('hub')"><span class="bi-cn">← 活动主页</span><span class="bi-en">← Home</span></button>
+<span class="act-hdr-title"><span class="bi-cn">活动四 · 创意破茧工坊</span><span class="bi-en">Activity 4 · Creative Studio</span></span>
+</div>
+<div class="know">
+
+<div class="k-hero" style="margin-top:8px">
+<span class="em">🎨</span>
+<h1 style="font-size:1.5em">
+<span class="bi-cn">创意破茧工坊</span>
+<span class="bi-en">Creative Bubble Studio</span>
+</h1>
+<p>
+<span class="bi-cn">用 AI 创作歌曲、漫画、海报等，把「信息茧房」讲给小学生听，一起打破泡泡！</span>
+<span class="bi-en">Create with AI—explain filter bubbles to younger students and break the bubble together!</span>
+</p>
+</div>
+
+<div class="keyword-box">
+<h3><span class="bi-cn">🔑 主题关键词（创作时请用上）</span><span class="bi-en">🔑 Theme keywords (use in your work)</span></h3>
+<div class="keyword-tags">
+<span class="kw"><span class="bi-cn">信息茧房</span><span class="bi-en">Filter bubble</span></span>
+<span class="kw"><span class="bi-cn">打破泡泡</span><span class="bi-en">Break the bubble</span></span>
+<span class="kw"><span class="bi-cn">多元声音</span><span class="bi-en">Diverse voices</span></span>
+<span class="kw"><span class="bi-cn">你看到的≠全部真相</span><span class="bi-en">What you see ≠ full truth</span></span>
+<span class="kw"><span class="bi-cn">算法推荐</span><span class="bi-en">Algorithm feed</span></span>
+<span class="kw"><span class="bi-cn">主动搜索对立面</span><span class="bi-en">Seek opposing views</span></span>
+<span class="kw"><span class="bi-cn">信息素养</span><span class="bi-en">Media literacy</span></span>
+<span class="kw"><span class="bi-cn">泡泡宇宙</span><span class="bi-en">Bubble Universe</span></span>
+</div>
+</div>
+
+<div class="k-section" style="margin-bottom:0">
+<div class="k-title">
+<span class="bi-cn">✨ 选一种形式，跟着步骤做</span>
+<span class="bi-en">✨ Pick a format and follow the steps</span>
+</div>
+
+<div class="create-grid">
+
+<!-- 1 AI Music -->
+<div class="create-opt" onclick="toggleCreate(this)">
+<div class="create-hd">
+<div class="create-icon">🎵</div>
+<div class="create-hd-info">
+<div class="create-hd-name"><span class="bi-cn">AI 歌曲</span><span class="bi-en">AI Song</span></div>
+<div class="create-hd-tool">suno.com</div>
+</div>
+<span class="create-toggle"><span class="bi-cn">展开 ▼</span><span class="bi-en">Open ▼</span></span>
+</div>
+<div class="create-body" onclick="event.stopPropagation()">
+<div class="create-prompt">
+<b><span class="bi-cn">💡 歌词/风格提示示例</span><span class="bi-en">💡 Prompt example</span></b>
+<span class="bi-cn">「一首轻快 pop 歌，主题是打破信息茧房，歌词包含：你刷到的不是全部真相、要多看不同声音、泡泡宇宙。」</span>
+<span class="bi-en">"Upbeat pop song about breaking filter bubbles—lyrics: what you see isn't the full truth, hear diverse voices, Bubble Universe."</span>
+</div>
+<div class="create-steps">
+<span class="bi-cn"><b>📋 操作步骤：</b></span>
+<span class="bi-en"><b>📋 Steps:</b></span>
+<ol>
+<li class="bi-cn">打开 <b>Suno</b>，注册/登录（可用 Google 账号）</li>
+<li class="bi-en">Open <b>Suno</b>, sign in (Google works)</li>
+<li class="bi-cn">点击「Create」→ 在描述框输入上面的主题关键词和歌词想法</li>
+<li class="bi-en">Tap <b>Create</b> → paste theme keywords and lyric ideas</li>
+<li class="bi-cn">选择风格（Pop / 说唱 / 民谣等），生成 2 首试听</li>
+<li class="bi-en">Pick a style (Pop, rap, folk…) and generate</li>
+<li class="bi-cn">下载或分享链接，在班上播放，讲解歌曲想表达什么</li>
+<li class="bi-en">Download or share—play in class and explain your message</li>
+</ol>
+</div>
+<a class="tool-btn" href="https://suno.com" target="_blank" rel="noopener noreferrer">🚀 <span class="bi-cn">打开 Suno</span><span class="bi-en">Open Suno</span></a>
+</div>
+</div>
+
+<!-- 2 AI Comic -->
+<div class="create-opt" onclick="toggleCreate(this)">
+<div class="create-hd">
+<div class="create-icon">📚</div>
+<div class="create-hd-info">
+<div class="create-hd-name"><span class="bi-cn">AI 漫画 / 连环画</span><span class="bi-en">AI Comic Book</span></div>
+<div class="create-hd-tool">canva.com · bing.com/create</div>
+</div>
+<span class="create-toggle"><span class="bi-cn">展开 ▼</span><span class="bi-en">Open ▼</span></span>
+</div>
+<div class="create-body" onclick="event.stopPropagation()">
+<div class="create-prompt">
+<b><span class="bi-cn">💡 故事梗概示例</span><span class="bi-en">💡 Story idea</span></b>
+<span class="bi-cn">小学生小明只刷游戏视频，算法越推越窄；后来他主动搜索科学、艺术，泡泡破了，世界变大。</span>
+<span class="bi-en">A student only watches gaming videos—the feed narrows. He searches science and art, breaks the bubble, world gets bigger.</span>
+</div>
+<div class="create-steps">
+<span class="bi-cn"><b>📋 操作步骤（Canva 漫画模板）：</b></span>
+<span class="bi-en"><b>📋 Steps (Canva comic):</b></span>
+<ol>
+<li class="bi-cn">打开 Canva → 搜索「Comic」或「漫画」模板</li>
+<li class="bi-en">Open Canva → search "Comic" templates</li>
+<li class="bi-cn">分 4–6 格，每格写一句对白，画出「茧房形成 → 打破」过程</li>
+<li class="bi-en">4–6 panels: bubble forms → you break it</li>
+<li class="bi-cn">配图可用 Canva 素材，或用 Bing Image Creator 生成单格插图后插入</li>
+<li class="bi-en">Use Canva art or Bing Image Creator for panel images</li>
+<li class="bi-cn">导出 PDF 或图片，打印贴在教室或发给同学</li>
+<li class="bi-en">Export PDF/images for classroom display</li>
+</ol>
+</div>
+<a class="tool-btn" href="https://www.canva.com" target="_blank" rel="noopener noreferrer">🚀 <span class="bi-cn">打开 Canva</span><span class="bi-en">Open Canva</span></a>
+<a class="tool-btn sec" href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer"><span class="bi-cn">Bing 绘图</span><span class="bi-en">Bing Images</span></a>
+</div>
+</div>
+
+<!-- 3 AI MV / Video -->
+<div class="create-opt" onclick="toggleCreate(this)">
+<div class="create-hd">
+<div class="create-icon">🎬</div>
+<div class="create-hd-info">
+<div class="create-hd-name"><span class="bi-cn">AI MV / 短视频</span><span class="bi-en">AI Music Video / Short Video</span></div>
+<div class="create-hd-tool">capcut.com · pika.art</div>
+</div>
+<span class="create-toggle"><span class="bi-cn">展开 ▼</span><span class="bi-en">Open ▼</span></span>
+</div>
+<div class="create-body" onclick="event.stopPropagation()">
+<div class="create-prompt">
+<b><span class="bi-cn">💡 视频脚本示例</span><span class="bi-en">💡 Video script</span></b>
+<span class="bi-cn">开场：手机满屏同一种颜色泡泡 → 中间：同学换看新闻/科普/艺术 → 结尾：字幕「打破信息茧房，看见更大的世界」</span>
+<span class="bi-en">Open: phone full of same-color bubbles → middle: switch to news, science, art → end card: "Break the bubble, see more."</span>
+</div>
+<div class="create-steps">
+<span class="bi-cn"><b>📋 操作步骤（CapCut 剪映）：</b></span>
+<span class="bi-en"><b>📋 Steps (CapCut):</b></span>
+<ol>
+<li class="bi-cn">在 Suno 做好歌曲（或选背景音乐），下载音频</li>
+<li class="bi-en">Make a song on Suno (or pick music), download audio</li>
+<li class="bi-cn">打开 CapCut → 新建项目 → 导入音频与图片/短视频片段</li>
+<li class="bi-en">Open CapCut → new project → import audio and clips</li>
+<li class="bi-cn">用「文字」加关键词字幕；可用「AI 特效」做泡泡转场</li>
+<li class="bi-en">Add keyword subtitles; try bubble transitions</li>
+<li class="bi-cn">导出 30–60 秒 MV，班级展示或上传学校平台</li>
+<li class="bi-en">Export 30–60s video for class sharing</li>
+</ol>
+</div>
+<a class="tool-btn" href="https://www.capcut.com" target="_blank" rel="noopener noreferrer">🚀 <span class="bi-cn">打开 CapCut</span><span class="bi-en">Open CapCut</span></a>
+<a class="tool-btn sec" href="https://pika.art" target="_blank" rel="noopener noreferrer"><span class="bi-cn">Pika 视频</span><span class="bi-en">Pika Art</span></a>
+</div>
+</div>
+
+<!-- 4 Poster -->
+<div class="create-opt" onclick="toggleCreate(this)">
+<div class="create-hd">
+<div class="create-icon">🖼️</div>
+<div class="create-hd-info">
+<div class="create-hd-name"><span class="bi-cn">宣传海报</span><span class="bi-en">Awareness Poster</span></div>
+<div class="create-hd-tool">designer.microsoft.com · canva.com</div>
+</div>
+<span class="create-toggle"><span class="bi-cn">展开 ▼</span><span class="bi-en">Open ▼</span></span>
+</div>
+<div class="create-body" onclick="event.stopPropagation()">
+<div class="create-prompt">
+<b><span class="bi-cn">💡 海报文案示例</span><span class="bi-en">💡 Poster text</span></b>
+<span class="bi-cn">大标题：打破信息泡泡！副标题：多看不同声音，你刷到的≠全部真相。画面：彩色泡泡 + 破茧的小人。</span>
+<span class="bi-en">Headline: Break the Bubble! Sub: Hear diverse voices—what you see ≠ full truth. Art: colorful bubbles + person breaking free.</span>
+</div>
+<div class="create-steps">
+<span class="bi-cn"><b>📋 操作步骤：</b></span>
+<span class="bi-en"><b>📋 Steps:</b></span>
+<ol>
+<li class="bi-cn">打开 Microsoft Designer 或 Canva → 选「海报」尺寸</li>
+<li class="bi-en">Open Microsoft Designer or Canva → poster size</li>
+<li class="bi-cn">输入主题关键词，用 AI 生成背景图（泡泡、地球、多元图标）</li>
+<li class="bi-en">Use AI to generate bubble/earth/diversity background</li>
+<li class="bi-cn">加上中英文标题 + 3 条破茧小贴士</li>
+<li class="bi-en">Add bilingual title + 3 bubble-breaking tips</li>
+<li class="bi-cn">打印贴在走廊，或发班级群提醒同学</li>
+<li class="bi-en">Print for hallway or share in class chat</li>
+</ol>
+</div>
+<a class="tool-btn" href="https://designer.microsoft.com" target="_blank" rel="noopener noreferrer">🚀 <span class="bi-cn">Designer</span><span class="bi-en">Designer</span></a>
+<a class="tool-btn sec" href="https://www.canva.com" target="_blank" rel="noopener noreferrer"><span class="bi-cn">Canva</span><span class="bi-en">Canva</span></a>
+</div>
+</div>
+
+<!-- 5 Dance -->
+<div class="create-opt" onclick="toggleCreate(this)">
+<div class="create-hd">
+<div class="create-icon">💃</div>
+<div class="create-hd-info">
+<div class="create-hd-name"><span class="bi-cn">创意舞蹈 / 手势舞</span><span class="bi-en">Creative Dance</span></div>
+<div class="create-hd-tool">capcut.com · 手机拍摄</div>
+</div>
+<span class="create-toggle"><span class="bi-cn">展开 ▼</span><span class="bi-en">Open ▼</span></span>
+</div>
+<div class="create-body" onclick="event.stopPropagation()">
+<div class="create-prompt">
+<b><span class="bi-cn">💡 舞蹈创意示例</span><span class="bi-en">💡 Dance idea</span></b>
+<span class="bi-cn">动作设计：双手合拢成「茧」→ 慢慢张开表示「破茧」→ 指向不同方向表示「多元世界」。配乐用活动四做的 Suno 歌曲。</span>
+<span class="bi-en">Hands form a "cocoon" → open wide "break free" → point different ways "diverse world." Use your Suno song!</span>
+</div>
+<div class="create-steps">
+<span class="bi-cn"><b>📋 操作步骤：</b></span>
+<span class="bi-en"><b>📋 Steps:</b></span>
+<ol>
+<li class="bi-cn">小组讨论：用哪几个动作代表「被困」和「打破」</li>
+<li class="bi-en">Discuss moves for "trapped" vs "break free"</li>
+<li class="bi-cn">手机横屏拍摄，背景干净，光线充足</li>
+<li class="bi-en">Film landscape, clean background, good light</li>
+<li class="bi-cn">用 CapCut 剪辑：加字幕关键词、泡泡贴纸特效</li>
+<li class="bi-en">Edit in CapCut: subtitles + bubble stickers</li>
+<li class="bi-cn">班会或校园活动上表演，并口头讲解信息茧房</li>
+<li class="bi-en">Perform at class event and explain filter bubbles</li>
+</ol>
+</div>
+<a class="tool-btn" href="https://www.capcut.com" target="_blank" rel="noopener noreferrer">🚀 <span class="bi-cn">CapCut 剪辑</span><span class="bi-en">Edit in CapCut</span></a>
+</div>
+</div>
+
+<!-- 6 Story / Slides -->
+<div class="create-opt" onclick="toggleCreate(this)">
+<div class="create-hd">
+<div class="create-icon">📖</div>
+<div class="create-hd-info">
+<div class="create-hd-name"><span class="bi-cn">AI 故事书 / 演讲稿</span><span class="bi-en">AI Story / Slides</span></div>
+<div class="create-hd-tool">chatgpt.com · slidesgo.com</div>
+</div>
+<span class="create-toggle"><span class="bi-cn">展开 ▼</span><span class="bi-en">Open ▼</span></span>
+</div>
+<div class="create-body" onclick="event.stopPropagation()">
+<div class="create-prompt">
+<b><span class="bi-cn">💡 写作提示示例</span><span class="bi-en">💡 Writing prompt</span></b>
+<span class="bi-cn">「给小学生写 300 字故事：信息泡泡精灵困住主角，主角通过看不同频道的新闻打破了泡泡。」</span>
+<span class="bi-en">"Write a 300-word story for kids: a bubble sprite traps the hero; they break free by watching diverse news channels."</span>
+</div>
+<div class="create-steps">
+<span class="bi-cn"><b>📋 操作步骤：</b></span>
+<span class="bi-en"><b>📋 Steps:</b></span>
+<ol>
+<li class="bi-cn">在 ChatGPT（需老师协助登录）输入上面的提示 + 主题关键词</li>
+<li class="bi-en">In ChatGPT (with teacher help), paste prompt + keywords</li>
+<li class="bi-cn">把故事改成自己的话，不要直接复制</li>
+<li class="bi-en">Rewrite in your own words—don't copy paste</li>
+<li class="bi-cn">用 Slidesgo 找「教育」模板做成 5 页小演讲</li>
+<li class="bi-en">Use Slidesgo education template for a 5-slide talk</li>
+<li class="bi-cn">给低年级同学讲一遍「什么是信息茧房」</li>
+<li class="bi-en">Present to younger grades</li>
+</ol>
+</div>
+<a class="tool-btn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">🚀 <span class="bi-cn">ChatGPT</span><span class="bi-en">ChatGPT</span></a>
+<a class="tool-btn sec" href="https://slidesgo.com" target="_blank" rel="noopener noreferrer"><span class="bi-cn">Slidesgo</span><span class="bi-en">Slidesgo</span></a>
+</div>
+</div>
+
+</div>
+
+<div class="submit-box">
+<h3><span class="bi-cn">📤 提交作品 Submission</span><span class="bi-en">📤 Submit Your Work</span></h3>
+<p>
+<span class="bi-cn">创作完成后，按以下步骤把作品上传到班级 SharePoint 文件夹：</span>
+<span class="bi-en">When your creation is ready, follow these steps to upload to the class SharePoint folder:</span>
+</p>
+<ol class="submit-steps">
+<li class="bi-cn">点击下方按钮，打开 <b>作品提交文件夹</b>（需用学校账号登录）</li>
+<li class="bi-en">Click the button below to open the <b>submission folder</b> (sign in with your school account)</li>
+<li class="bi-cn">在文件夹里 <b>新建一个 Advisor Group 文件夹</b>，命名为你们的小组名（如 <b>Advisor Group 3</b>）</li>
+<li class="bi-en"><b>Create a new folder</b> for your advisor group (e.g. <b>Advisor Group 3</b>)</li>
+<li class="bi-cn">把作品文件 <b>上传</b> 到你们小组的文件夹里</li>
+<li class="bi-en"><b>Upload</b> your file into your group's folder</li>
+<li class="bi-cn"><b>重命名文件</b>：你的英文名 + 队友英文名（FirstName + LastName，多人用下划线连接）</li>
+<li class="bi-en"><b>Rename the file</b>: your FirstName + LastName, plus each teammate's (use underscores between names)</li>
+</ol>
+<div class="submit-example">
+<span class="bi-cn"><b>文件名示例：</b>两人小组 <code>AmyWang_LeoChen.mp4</code> · 三人小组 <code>AmyWang_LeoChen_SaraLi.pdf</code></span>
+<span class="bi-en"><b>Filename examples:</b> pair <code>AmyWang_LeoChen.mp4</code> · trio <code>AmyWang_LeoChen_SaraLi.pdf</code></span>
+</div>
+<div class="submit-btn-wrap">
+<a class="tool-btn" href="https://keystoneacademy-my.sharepoint.com/:f:/g/personal/jenny_zhang_keystoneacademy_cn/IgDMGu6We_aUQ4IK44dzQp0iAWBVYiSmYmQaNh0LviKlsGY?e=sFN5RF" target="_blank" rel="noopener noreferrer">
+📁 <span class="bi-cn">打开作品提交文件夹</span><span class="bi-en">Open Submission Folder</span>
+</a>
+</div>
+</div>
+
+<div class="create-note">
+<span class="bi-cn">⚠️ <b>老师提示：</b>使用 AI 工具需家长/老师同意；不要上传个人照片到陌生网站；作品需体现「了解茧房 + 如何打破」，鼓励原创与团队合作。</span>
+<span class="bi-en">⚠️ <b>For teachers:</b> Get permission before using AI tools; don't upload personal photos to unknown sites; work should show understanding + how to break free—encourage originality and teamwork.</span>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+function toggleCreate(el){
+  var wasOpen=el.classList.contains('open');
+  var all=document.querySelectorAll('.create-opt');
+  for(var i=0;i<all.length;i++){
+    all[i].classList.remove('open');
+    var tg=all[i].querySelector('.create-toggle');
+    if(tg){
+      var cn=tg.querySelector('.bi-cn'),en=tg.querySelector('.bi-en');
+      if(cn)cn.textContent='展开 ▼';
+      if(en)en.textContent='Open ▼';
+    }
+  }
+  if(!wasOpen){
+    el.classList.add('open');
+    var t=el.querySelector('.create-toggle');
+    if(t){
+      var c=t.querySelector('.bi-cn'),e=t.querySelector('.bi-en');
+      if(c)c.textContent='收起 ▲';
+      if(e)e.textContent='Close ▲';
+    }
+  }
+}
+
+function openImgLb(){document.getElementById('imgLb').classList.add('show');document.body.style.overflow='hidden'}
+function closeImgLb(){document.getElementById('imgLb').classList.remove('show');document.body.style.overflow=''}
+
+var currentView='hub';
+function showView(id){
+  currentView=id;
+  var views=document.querySelectorAll('.page-view');
+  for(var i=0;i<views.length;i++)views[i].classList.remove('on');
+  document.getElementById('view-'+id).classList.add('on');
+  window.scrollTo(0,0);
+  document.body.style.overflow=id==='game'?'hidden':'';
+  if(id==='game'){
+    var lang=document.body.classList.contains('lang-en')?'en':'cn';
+    var f=document.getElementById('gameFrame');
+    if(f)f.src='-信息茧房体验馆.html?lang='+lang;
+    setTimeout(function(){
+      try{syncGameLang(lang)}catch(e){}
+    },300);
+  }
+}
+
+function syncGameLang(lang){
+  var f=document.getElementById('gameFrame');
+  if(!f||!f.contentWindow)return;
+  f.contentWindow.postMessage({type:'bubble-lang',lang:lang},'*');
+}
+
+function setLang(l){
+  document.body.className='lang-'+l;
+  document.getElementById('btnCn').classList.toggle('on',l==='cn');
+  document.getElementById('btnEn').classList.toggle('on',l==='en');
+  if(currentView==='game') syncGameLang(l);
+  else{
+    var f=document.getElementById('gameFrame');
+    if(f)f.src='-信息茧房体验馆.html?lang='+l;
+  }
+}
+</script>
+</body>
+</html>
