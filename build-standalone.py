@@ -8,7 +8,7 @@ ROOT = Path(__file__).parent
 MAIN = ROOT / "-泡泡宇宙-信息茧房互动体验.html"
 GAME = ROOT / "-信息茧房体验馆.html"
 IMG = ROOT / "ChatGPT Image Jun 14, 2026, 10_13_42 PM.png"
-OUT = ROOT / "泡泡宇宙-信息素养活动站-完整版.html"
+OUT = ROOT / "index.html"
 
 main = MAIN.read_text(encoding="utf-8")
 game_b64 = base64.b64encode(GAME.read_bytes()).decode("ascii")
