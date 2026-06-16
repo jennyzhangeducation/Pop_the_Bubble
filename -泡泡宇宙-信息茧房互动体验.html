@@ -68,20 +68,22 @@ body.lang-cn .bi-en{display:none}
   cursor:pointer;transition:all .3s;border:3px solid transparent;
   box-shadow:0 4px 16px rgba(0,0,0,.06);background:#fff;text-align:left
 }
-.activity-card:nth-child(1){border-color:rgba(255,92,138,.45);background:linear-gradient(135deg,#FFF0F8,#fff)}
-.activity-card:nth-child(2){border-color:rgba(0,180,216,.45);background:linear-gradient(135deg,#F0FAFF,#fff)}
-.activity-card:nth-child(3){border-color:rgba(70,23,143,.35);background:linear-gradient(135deg,#F8F0FF,#fff)}
-.activity-card:nth-child(4){border-color:rgba(46,204,113,.45);background:linear-gradient(135deg,#F0FFF5,#fff)}
+.activity-card:nth-child(1){border-color:rgba(255,159,67,.5);background:linear-gradient(135deg,#FFF8E8,#fff)}
+.activity-card:nth-child(2){border-color:rgba(255,92,138,.45);background:linear-gradient(135deg,#FFF0F8,#fff)}
+.activity-card:nth-child(3){border-color:rgba(0,180,216,.45);background:linear-gradient(135deg,#F0FAFF,#fff)}
+.activity-card:nth-child(4){border-color:rgba(70,23,143,.35);background:linear-gradient(135deg,#F8F0FF,#fff)}
+.activity-card:nth-child(5){border-color:rgba(46,204,113,.45);background:linear-gradient(135deg,#F0FFF5,#fff)}
 .activity-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(155,93,229,.18)}
 .activity-card:active{transform:scale(.98)}
 .act-badge{
   width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;
   font-size:1.6em;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.08)
 }
-.activity-card:nth-child(1) .act-badge{background:linear-gradient(135deg,#FFE0EC,#F8D0FF)}
-.activity-card:nth-child(2) .act-badge{background:linear-gradient(135deg,#D0F0FF,#C8FFE8)}
-.activity-card:nth-child(3) .act-badge{background:linear-gradient(135deg,#E8D8FF,#F0D0FF)}
-.activity-card:nth-child(4) .act-badge{background:linear-gradient(135deg,#D8FFE8,#C8F0FF)}
+.activity-card:nth-child(1) .act-badge{background:linear-gradient(135deg,#FFE8C8,#FFD166)}
+.activity-card:nth-child(2) .act-badge{background:linear-gradient(135deg,#FFE0EC,#F8D0FF)}
+.activity-card:nth-child(3) .act-badge{background:linear-gradient(135deg,#D0F0FF,#C8FFE8)}
+.activity-card:nth-child(4) .act-badge{background:linear-gradient(135deg,#E8D8FF,#F0D0FF)}
+.activity-card:nth-child(5) .act-badge{background:linear-gradient(135deg,#D8FFE8,#C8F0FF)}
 .act-info{flex:1;min-width:0}
 .act-label{font-size:.68em;font-weight:800;color:var(--pp);margin-bottom:2px}
 .act-name{font-weight:900;font-size:1.05em;color:var(--tx);margin-bottom:4px;line-height:1.3}
@@ -347,6 +349,12 @@ body.lang-cn .bi-en{display:none}
 }
 .kahoot-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 32px rgba(70,23,143,.45)}
 .kahoot-btn:active{transform:scale(.98)}
+.kahoot-btn.sec{background:linear-gradient(135deg,#FF5C8A,#FF9F43);box-shadow:0 8px 24px rgba(255,92,138,.35)}
+.kahoot-btn.sec:hover{box-shadow:0 12px 32px rgba(255,92,138,.45)}
+.kahoot-btn-group{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:4px}
+.kahoot-group-block{margin-top:18px;padding-top:18px;border-top:2px dashed rgba(155,93,229,.25)}
+.kahoot-group-block:first-of-type{margin-top:0;padding-top:0;border-top:none}
+.kahoot-group-label{font-size:.92em;font-weight:900;color:var(--tx);margin-bottom:12px}
 .kahoot-steps{
   margin-top:22px;padding:16px;border-radius:16px;background:rgba(255,255,255,.7);
   border:2px dashed rgba(155,93,229,.3);text-align:left
@@ -399,17 +407,30 @@ body.lang-cn .bi-en{display:none}
 <span class="bi-en">Bubble Universe</span>
 </h1>
 <p>
-<span class="bi-cn">信息素养主题学习 · 四个活动带你认识并打破信息茧房</span>
-<span class="bi-en">Media literacy hub · Four activities to explore and break filter bubbles</span>
+<span class="bi-cn">信息素养主题学习 · 从热身回顾开始，五个活动带你认识并打破信息茧房</span>
+<span class="bi-en">Media literacy hub · Start with a warm-up review, then five activities to explore and break filter bubbles</span>
 </p>
 </div>
 
 <div class="hub-route">
-<span class="bi-cn">📍 推荐路线：<b>茧房迷宫</b> → <b>泡泡百科</b> → <b>闯关答题</b> → <b>创意破茧</b> 用 AI 创作分享！</span>
-<span class="bi-en">📍 Route: <b>Bubble Maze</b> → <b>Bubble Wiki</b> → <b>Quiz Quest</b> → <b>Creative Studio</b>!</span>
+<span class="bi-cn">📍 推荐路线：<b>热身回顾</b> → <b>茧房迷宫</b> → <b>泡泡百科</b> → <b>闯关答题</b> → <b>创意破茧</b> 用 AI 创作分享！</span>
+<span class="bi-en">📍 Route: <b>Warm-up Review</b> → <b>Bubble Maze</b> → <b>Bubble Wiki</b> → <b>Quiz Quest</b> → <b>Creative Studio</b>!</span>
 </div>
 
 <div class="activity-list">
+
+<div class="activity-card" onclick="showView('warmup')">
+<div class="act-badge">🔥</div>
+<div class="act-info">
+<div class="act-label"><span class="bi-cn">热身 · 回顾上节课</span><span class="bi-en">Warm-up · Review</span></div>
+<div class="act-name"><span class="bi-cn">上节课回顾</span><span class="bi-en">Last Lesson Review</span></div>
+<div class="act-desc">
+<span class="bi-cn">Kahoot 快速热身，回顾上节课学过的内容，唤醒记忆再开始今天的新活动</span>
+<span class="bi-en">Quick Kahoot warm-up to review last lesson before today's activities</span>
+</div>
+</div>
+<div class="act-go"><span class="bi-cn">进入 →</span><span class="bi-en">Go →</span></div>
+</div>
 
 <div class="activity-card" onclick="showView('game')">
 <div class="act-badge">🎮</div>
@@ -463,6 +484,73 @@ body.lang-cn .bi-en{display:none}
 <div class="act-go"><span class="bi-cn">进入 →</span><span class="bi-en">Go →</span></div>
 </div>
 
+</div>
+
+</div>
+</div>
+
+<!-- ===== 热身：上节课回顾 ===== -->
+<div class="page-view" id="view-warmup">
+<div class="activity-header">
+<button class="hub-back" onclick="showView('hub')"><span class="bi-cn">← 活动主页</span><span class="bi-en">← Home</span></button>
+<span class="act-hdr-title"><span class="bi-cn">热身 · 上节课回顾</span><span class="bi-en">Warm-up · Last Lesson Review</span></span>
+</div>
+<div class="know">
+
+<div class="k-hero" style="margin-top:8px">
+<span class="em">🔥</span>
+<h1 style="font-size:1.5em">
+<span class="bi-cn">热身回顾 · Kahoot 挑战</span>
+<span class="bi-en">Warm-up Review · Kahoot Challenge</span>
+</h1>
+<p>
+<span class="bi-cn">先快速回顾上节课的内容，再开始今天的学习！</span>
+<span class="bi-en">Quickly review last lesson before starting today's activities!</span>
+</p>
+</div>
+
+<div class="k-section" style="margin-bottom:0">
+<div class="kahoot-card">
+<span class="kahoot-logo">📝</span>
+<h3>
+<span class="bi-cn">Ms. Jenny 班 · 上节课回顾 Kahoot 💡</span>
+<span class="bi-en">Ms. Jenny's Class · Last Lesson Review Kahoot 💡</span>
+</h3>
+<p class="kahoot-desc">
+<span class="bi-cn">点击下方按钮进入 Kahoot，输入你的名字后开始答题，看看上节课的内容还记得多少！</span>
+<span class="bi-en">Click below to open Kahoot, enter your name, and see how much you remember from last lesson!</span>
+</p>
+<a class="kahoot-btn" href="https://kahoot.it/challenge/0027558110" target="_blank" rel="noopener noreferrer">
+<span>🚀</span>
+<span class="bi-cn">开始热身 Kahoot</span>
+<span class="bi-en">Start Warm-up Kahoot</span>
+</a>
+<div class="kahoot-steps">
+<span class="bi-cn"><b>📋 答题步骤：</b></span>
+<span class="bi-en"><b>📋 How to play:</b></span>
+<ol>
+<li class="bi-cn">点击上方「开始热身 Kahoot」按钮</li>
+<li class="bi-en">Click "Start Warm-up Kahoot" above</li>
+<li class="bi-cn">在新页面输入你的名字（昵称）</li>
+<li class="bi-en">Enter your name (nickname) on the new page</li>
+<li class="bi-cn">阅读题目，选择你认为正确的答案</li>
+<li class="bi-en">Read each question and pick your answer</li>
+<li class="bi-cn">答完后查看得分，准备好开始今天的活动！</li>
+<li class="bi-en">Check your score, then get ready for today's activities!</li>
+</ol>
+</div>
+<p class="kahoot-link">
+<span class="bi-cn">Ms. Jenny 链接：</span><span class="bi-en">Ms. Jenny link: </span>
+<a href="https://kahoot.it/challenge/0027558110" target="_blank" rel="noopener noreferrer">https://kahoot.it/challenge/0027558110</a>
+</p>
+</div>
+</div>
+
+<div style="text-align:center;margin-top:20px">
+<button class="hub-back" style="font-size:.9em;padding:12px 28px" onclick="showView('game')">
+<span class="bi-cn">下一步：活动一 茧房迷宫 →</span>
+<span class="bi-en">Next: Activity 1 Bubble Maze →</span>
+</button>
 </div>
 
 </div>
@@ -847,20 +935,44 @@ you've already taken the first step to break it.🫧</span>
 <span class="bi-en">Take the Kahoot challenge! Test what you learned 💡</span>
 </h3>
 <p class="kahoot-desc">
-<span class="bi-cn">点击下方按钮，进入 Kahoot 答题页面。输入你的名字后开始答题，看看你能得多少分！</span>
-<span class="bi-en">Click the button below to open Kahoot. Enter your name and start the quiz—see how high you can score!</span>
+<span class="bi-cn">请选择你所在班级的 Kahoot 链接，输入名字后开始答题，看看你能得多少分！</span>
+<span class="bi-en">Choose your class Kahoot link below, enter your name, and see how high you can score!</span>
 </p>
+
+<div class="kahoot-group-block">
+<p class="kahoot-group-label"><span class="bi-cn">👩‍🏫 Ms. Jenny Group</span><span class="bi-en">👩‍🏫 Ms. Jenny Group</span></p>
+<div class="kahoot-btn-group">
 <a class="kahoot-btn" href="https://kahoot.it/challenge/08307247" target="_blank" rel="noopener noreferrer">
 <span>🚀</span>
-<span class="bi-cn">开始 Kahoot 答题</span>
-<span class="bi-en">Start Kahoot Quiz</span>
+<span class="bi-cn">进入 Ms. Jenny 班 Kahoot</span>
+<span class="bi-en">Join Ms. Jenny's Kahoot</span>
 </a>
+</div>
+<p class="kahoot-link">
+<a href="https://kahoot.it/challenge/08307247" target="_blank" rel="noopener noreferrer">https://kahoot.it/challenge/08307247</a>
+</p>
+</div>
+
+<div class="kahoot-group-block">
+<p class="kahoot-group-label"><span class="bi-cn">👩‍🏫 Ms. Keqing</span><span class="bi-en">👩‍🏫 Ms. Keqing</span></p>
+<div class="kahoot-btn-group">
+<a class="kahoot-btn sec" href="https://kahoot.it/challenge/06286910" target="_blank" rel="noopener noreferrer">
+<span>🚀</span>
+<span class="bi-cn">进入 Ms. Keqing 班 Kahoot</span>
+<span class="bi-en">Join Ms. Keqing's Kahoot</span>
+</a>
+</div>
+<p class="kahoot-link">
+<a href="https://kahoot.it/challenge/06286910" target="_blank" rel="noopener noreferrer">https://kahoot.it/challenge/06286910</a>
+</p>
+</div>
+
 <div class="kahoot-steps">
 <span class="bi-cn"><b>📋 答题步骤：</b></span>
 <span class="bi-en"><b>📋 How to play:</b></span>
 <ol>
-<li class="bi-cn">点击上方「开始 Kahoot 答题」按钮</li>
-<li class="bi-en">Click "Start Kahoot Quiz" above</li>
+<li class="bi-cn">点击上方对应班级的 Kahoot 按钮</li>
+<li class="bi-en">Click your class Kahoot button above</li>
 <li class="bi-cn">在新页面输入你的名字（昵称）</li>
 <li class="bi-en">Enter your name (nickname) on the new page</li>
 <li class="bi-cn">阅读题目，选择你认为正确的答案</li>
@@ -869,10 +981,6 @@ you've already taken the first step to break it.🫧</span>
 <li class="bi-en">Check your score at the end and compare with classmates!</li>
 </ol>
 </div>
-<p class="kahoot-link">
-<span class="bi-cn">链接：</span><span class="bi-en">Link: </span>
-<a href="https://kahoot.it/challenge/08307247" target="_blank" rel="noopener noreferrer">https://kahoot.it/challenge/08307247</a>
-</p>
 </div>
 </div>
 

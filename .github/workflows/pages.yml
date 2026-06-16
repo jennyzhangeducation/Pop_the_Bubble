@@ -23,10 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare site (完整版 only)
+      - name: Prepare site (index.html)
         run: |
           mkdir -p _site
-          cp "泡泡宇宙-信息素养活动站-完整版.html" _site/index.html
+          cp index.html _site/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
